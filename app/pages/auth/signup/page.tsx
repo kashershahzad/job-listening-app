@@ -138,7 +138,6 @@ const SignUpForm: React.FC = () => {
             >
               Sign Up
             </Button>
-
             {/* Already have an account? Sign in */}
             <Typography variant="body2" align="center" className="mt-4">
               Already have an account?

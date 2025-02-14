@@ -2,9 +2,16 @@
 'use client'
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';  // Import useRouter
 import BuildWebsite from '@/public/assests/Landingpage-hero.png';
 
 export default function Hero() {
+    const router = useRouter();  // Initialize the router
+
+    const handleGetStarted = () => {
+        router.push('pages/auth/signup');  // Navigate to the signup page
+    };
+
     return (
         <section className="hero bg-white flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 sm:px-8 lg:px-12 py-8">
             {/* Content on the left side for larger screens, top for mobile */}
@@ -22,6 +29,7 @@ export default function Hero() {
                     Welcome to Career! We ensure to make your journey interesting and memorable.
                 </p>
                 <button
+                    onClick={handleGetStarted}  // Add the onClick handler
                     className="flex items-center px-10 py-4 text-white text-xl bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-lg hover:from-indigo-600 hover:to-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
                 >
                     Get Started

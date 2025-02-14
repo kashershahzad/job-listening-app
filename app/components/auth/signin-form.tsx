@@ -1,29 +1,32 @@
 'use client';
 import * as React from 'react';
-import RouterLink from 'next/link';
+import { useRouter } from 'next/navigation'; // Importing the useRouter hook
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
 import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
-import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import { Visibility, VisibilityOff } from '@mui/icons-material'; // MUI icons for show/hide password
 
 export function SignInForm(): React.JSX.Element {
-  const [showPassword, setShowPassword] = React.useState<boolean>();
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const router = useRouter(); // Using useRouter hook to navigate
+
+  const handleRegisterClick = () => {
+    router.push('/pages/auth/signup'); // Navigates to /auth/signup page
+  };
 
   return (
     <Stack spacing={4}>
       <Stack spacing={1}>
-        <Box component="span" className='text-transparent bg-no-repeat bg-clip-text bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 font-bold text-4xl text-start' >
-          Yomusick Dasboard
+        
+        <Box component="span" className='text-lightblue font-bold text-4xl text-start'>
+          Career Seeker
         </Box>
-        <Typography variant="h4" className='text-white'>Sign in</Typography>
+        <Typography variant="h6" className='text-gray-600'>Sign in</Typography>
       </Stack>
       <form>
         <Stack spacing={2}>
@@ -33,16 +36,16 @@ export function SignInForm(): React.JSX.Element {
               label="Username"
               sx={{
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '& .MuiInputBase-input': {
-                  color: 'white',
+                  color: 'gray',
                 },
               }}
             />
@@ -50,39 +53,39 @@ export function SignInForm(): React.JSX.Element {
           <FormControl>
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
               endAdornment={
                 showPassword ? (
-                  <EyeIcon
+                  <Visibility
                     cursor="pointer"
-                    fontSize="var(--icon-fontSize-md)"
+                    fontSize="medium"
                     onClick={(): void => {
                       setShowPassword(false);
                     }}
                   />
                 ) : (
-                  <EyeSlashIcon
+                  <VisibilityOff
                     cursor="pointer"
-                    fontSize="var(--icon-fontSize-md)"
+                    fontSize="medium"
                     onClick={(): void => {
                       setShowPassword(true);
                     }}
                   />
                 )
               }
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
               sx={{
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white',
+                  borderColor: 'gray',
                 },
                 '& .MuiInputBase-input': {
-                  color: 'white',
+                  color: 'gray',
                 },
               }}
             />
@@ -90,11 +93,15 @@ export function SignInForm(): React.JSX.Element {
           <Button type="submit" variant="contained">
             Sign in
           </Button>
-          <div>
-            <Link component={RouterLink} href="#" variant="subtitle2">
-              Forgot password?
-            </Link>
-          </div>
+          {/* Registration Link */}
+          <Box mt={2}>
+            <Typography variant="body2" align="center">
+              Don't have an account?{' '}
+              <Button onClick={handleRegisterClick} variant="text" color="primary">
+                Register
+              </Button>
+            </Typography>
+          </Box>
         </Stack>
       </form>
     </Stack>

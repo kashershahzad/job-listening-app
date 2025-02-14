@@ -1,11 +1,8 @@
-
 /* eslint-disable some-rule -- explanation of why this rule is disabled */
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-
 
 export interface LayoutProps {
   children: React.ReactNode;
@@ -19,12 +16,20 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
         flexDirection: 'column',
         gridTemplateColumns: '1fr 1fr',
         minHeight: '100%',
+        backgroundColor: 'white',
       }}
     >
-      <Box sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column', backgroundColor:'#081730' }}>
+      <Box sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column', backgroundColor: 'white' }}>
         <Box sx={{ p: 3 }}>
-          <p>logo</p>
-        </Box>
+      
+            <Box
+              component="img"
+              alt="Widgets"
+              src="\assests/logo.jpg"
+              sx={{ height: 'auto', width: '100%', maxWidth: '100px' }}
+            />
+          </Box>
+     
         <Box sx={{ alignItems: 'center', display: 'flex', flex: '1 1 auto', justifyContent: 'center', p: 3 }}>
           <Box sx={{ maxWidth: '450px', width: '100%' }}>{children}</Box>
         </Box>
@@ -32,33 +37,22 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
       <Box
         sx={{
           alignItems: 'center',
-          background: 'radial-gradient(50% 50% at 50% 50%, #081730 0%, #081730 100%)',
-          color: 'var(--mui-palette-common-white)',
+          backgroundColor: 'white', // Set white background for the right side
           display: { xs: 'none', lg: 'flex' },
           justifyContent: 'center',
           p: 3,
         }}
       >
-        <Stack spacing={3}>
+        <Stack spacing={1}>
           <Stack spacing={1}>
-            <Typography color="inherit" sx={{ fontSize: '24px', lineHeight: '32px', textAlign: 'center' }} variant="h1">
-              Welcome to{' '}
-              <br />
-              <Box component="span" className='text-transparent bg-no-repeat bg-clip-text bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 font-bold text-4xl text-start' >
-                Yomusick Dasboard
-              </Box>
-            </Typography>
-            <Typography align="center" variant="subtitle1">
-              Convert Your Sounds into a Music
-              Sell it into Yomusick App
-            </Typography>
           </Stack>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               component="img"
               alt="Widgets"
-              src="\assests\Design.png"
+              src="\assests\sign-in.avif"
               sx={{ height: 'auto', width: '100%', maxWidth: '500px' }}
+              className='mt-5'
             />
           </Box>
         </Stack>

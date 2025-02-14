@@ -19,3 +19,16 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+section {
+  @apply mb-28;
+}
+
+.header {
+  @apply flex flex-col py-4 mb-4 justify-between;
+}
+
+.hero {
+  @apply container px-5 flex flex-col mx-auto;
+}

@@ -1,3 +1,4 @@
+import { light } from "@mui/material/styles/createPalette";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -11,6 +12,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        lightblue:"#0B9AF7",
       },
     },
   },

@@ -14,7 +14,6 @@ const signupSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.string().min(1, 'Role is required'),
 });
 
 // Type for form data
@@ -33,10 +32,10 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      const response = await axios.post('/api/auth/signup', data);
+      const response = await axios.post('/api/auth/register', data);
       console.log('User registered successfully', response.data);
       // Optionally, redirect to sign-in page after successful sign-up
-      router.push('/auth/signin');
+      router.push('/pages/auth/signin');
     } catch (error) {
       console.error('Error during signup:', error);
     }
@@ -99,31 +98,17 @@ const SignUpForm: React.FC = () => {
                 />
               </Grid>
 
-              {/* Password and Role Fields in One Row */}
-              <Grid container item xs={12} spacing={2}>
-
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('role')}
-                    label="Role"
-                    variant="outlined"
-                    fullWidth
-                    error={!!errors.role}
-                    helperText={errors.role?.message}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('password')}
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    type="password"
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                  />
-                </Grid>
+              {/* Password Field */}
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  {...register('password')}
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  type="password"
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
               </Grid>
             </Grid>
 

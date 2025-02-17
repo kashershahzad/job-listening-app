@@ -1,34 +1,51 @@
 import { PrismaClient } from "@prisma/client";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { email, password } = body;
+    let name = '';
+    let email = '';
+    let password = '';
 
-    if (!email || !password) {
-      return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
+    try {
+        const body = await req.json();
+        name = body.name;
+        email = body.email;
+        password = body.password;
+    } catch (error) {
+        return NextResponse.json({ error: "Invalid JSON format" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
+    if (!name) {
+        return NextResponse.json({ message: "Name is required" }, { status: 400 });
+    }
+    if (!email) {
+        return NextResponse.json({ message: "Email is required" }, { status: 400 });
+    }
+    if (!password) {
+        return NextResponse.json({ message: "Password is required" }, { status: 400 });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+        where: { email }
     });
 
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (existingUser) {
+        return NextResponse.json({ message: "User already exists" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return NextResponse.json({ message: "Invalid password" }, { status: 401 });
-    }
+    // Hash the password before saving it
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    return NextResponse.json({ user, message: "Login successful" }, { status: 200 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
-  }
+    const user = await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword,
+        }
+    });
+
+    return NextResponse.json({ user, message: "User created successfully" });
 }

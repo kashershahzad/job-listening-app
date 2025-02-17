@@ -36,7 +36,7 @@ export function SignInForm(): React.JSX.Element {
       });
 
       if (response.ok) {
-        router.push('/dashboard');
+        router.push('/pages/dashboard');
       } else {
         const data = await response.json();
         setError(data.message || 'Login failed');

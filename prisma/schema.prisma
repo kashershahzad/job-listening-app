@@ -14,11 +14,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {  
-  id       Int       @id @default(autoincrement())  
-  name     String  
-  email    String    @unique  
-  password String  
-  role     String    @default("user")
-}  
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  role         String        @default("user")
+  jobs         Job[]
+  applications Application[]
+}
 
+model Job {
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String
+  category     String
+  location     String
+  salary       Float
+  postedBy     User?         @relation(fields: [postedById], references: [id])
+  postedById   Int?
+  applications Application[]
+}
+
+model Application {
+  id     Int    @id @default(autoincrement())
+  jobId  Int
+  userId Int
+  resume String
+  status String @default("pending")
+  job    Job    @relation(fields: [jobId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}

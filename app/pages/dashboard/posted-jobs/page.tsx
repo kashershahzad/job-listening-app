@@ -172,7 +172,6 @@ export default function JobList() {
           >
             Close
           </Button>
-          
         </Box>
       </Modal>
     </div>

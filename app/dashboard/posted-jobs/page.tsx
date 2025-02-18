@@ -33,6 +33,7 @@ export default function JobList() {
         throw new Error('Failed to delete job');
       }
       setJobs(jobs.filter((job) => job.id !== id)); // Remove the job from the list
+      handleClose(); // Close the modal after deletion
     } catch (error) {
       console.error('Error deleting job:', error);
       setError('Failed to delete job');
@@ -166,12 +167,26 @@ export default function JobList() {
             <span className="font-semibold">Salary:</span> $
             {selectedJob?.salary.toLocaleString()}
           </Typography>
-          <Button
-            onClick={handleClose}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
-          >
-            Close
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => selectedJob && handleUpdate(selectedJob)}
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
+              Update
+            </Button>
+            <Button
+              onClick={() => selectedJob && handleDelete(selectedJob.id)}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
+              Delete
+            </Button>
+            <Button
+              onClick={handleClose}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+            >
+              Close
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>

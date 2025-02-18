@@ -9,7 +9,7 @@ export default function Hero() {
     const router = useRouter();  // Initialize the router
 
     const handleGetStarted = () => {
-        router.push('pages/auth/signup');  // Navigate to the signup page
+        router.push('/signup');  // Navigate to the signup page
     };
 
     return (

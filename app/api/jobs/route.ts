@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const Prisma = new PrismaClient();
 
 interface JobPostRequest {
+    id?: string; // Add id for update operation
     title: string;
     description: string;
     category: string;
@@ -61,7 +62,7 @@ export async function DELETE(req: NextRequest) {
         await Prisma.job.delete({
             where: { id },
         });
-        return new Response(JSON.stringify({ message: "Customer Deleted successfully" }), {
+        return new Response(JSON.stringify({ message: "Job Deleted successfully" }), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
@@ -73,3 +74,43 @@ export async function DELETE(req: NextRequest) {
     }
 }
 
+export async function PUT(req: NextRequest) {
+    let body: JobPostRequest;
+
+    try {
+        body = await req.json();
+    } catch (error) {
+        return NextResponse.json({ error: "Invalid JSON format" }, { status: 400 });
+    }
+
+    const { id, title, description, category, location, salary } = body;
+
+    if (!id || !title || !description || !category || !location || !salary) {
+        return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
+
+    try {
+        // Convert `id` from string to number
+        const jobId = parseInt(id, 10);
+
+        if (isNaN(jobId)) {
+            return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
+        }
+
+        const updatedJob = await Prisma.job.update({
+            where: { id: jobId }, // Use the numeric `id`
+            data: {
+                title,
+                description,
+                category,
+                location,
+                salary: parseFloat(salary),
+            },
+        });
+
+        return NextResponse.json({ job: updatedJob }, { status: 200 });
+    } catch (error) {
+        console.error("Error updating job:", error);
+        return NextResponse.json({ error: "Failed to update job" }, { status: 500 });
+    }
+}

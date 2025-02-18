@@ -12,22 +12,32 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     {
       text: 'Profile',
       icon: '👤',
-      path: '/pages/dashboard/profile',
+      path: '/dashboard/profile',
     },
     {
       text: 'Create Job',
       icon: '➕',
-      path: '/pages/dashboard/create-job',
+      path: '/dashboard/create-job',
     },
     {
       text: 'Total Jobs',
       icon: '📋',
-      path: '/pages/dashboard/total-job',
+      path: '/dashboard/total-job',
     },
     {
       text: 'Posted Jobs',
       icon: '📋',
-      path: '/pages/dashboard/posted-jobs',
+      path: '/dashboard/posted-jobs',
+    },
+    {
+      text: 'Applied Jobs',
+      icon: '📋',
+      path: '/dashboard/posted-jobs',
+    },
+    {
+      text: 'Hiring Requests',
+      icon: '📋',
+      path: '/dashboard/posted-jobs',
     },
   ];
 

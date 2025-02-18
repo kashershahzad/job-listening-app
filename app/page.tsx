@@ -1,5 +1,5 @@
 import React from 'react'
-import Landingpage from "@/app/pages/landingpage/page"
+import Landingpage from "@/app/landingpage/page"
 
 const page = () => {
   return (

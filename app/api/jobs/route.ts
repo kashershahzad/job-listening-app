@@ -54,3 +54,22 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Failed to fetch jobs" }, { status: 500 });
     }
 }
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const { id } = await req.json();
+        await Prisma.job.delete({
+            where: { id },
+        });
+        return new Response(JSON.stringify({ message: "Customer Deleted successfully" }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        return new Response(
+            JSON.stringify({ message: "Something went wrong", }),
+            { status: 500 }
+        );
+    }
+}
+

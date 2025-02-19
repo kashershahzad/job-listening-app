@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button, Modal, Box, CircularProgress } from '@mui/material';
+import { useUser } from '@/context/UserContext'; // Adjust the import path
 
 interface Job {
   id: number;
@@ -17,6 +18,9 @@ export default function JobList() {
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [applyModalOpen, setApplyModalOpen] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const { user } = useUser(); // Get the user from the context
 
   const handleOpen = (job: Job) => {
     setSelectedJob(job);
@@ -24,6 +28,12 @@ export default function JobList() {
   };
   const handleClose = () => setOpen(false);
 
+  const handleApplyOpen = () => {
+    setApplyModalOpen(true);
+  };
+  const handleApplyClose = () => setApplyModalOpen(false);
+
+  
   useEffect(() => {
     fetch('/api/jobs')
       .then((response) => {
@@ -42,6 +52,49 @@ export default function JobList() {
         setLoading(false);
       });
   }, []);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setResumeFile(event.target.files[0]);
+      console.log('Resume file selected:', event.target.files[0]); // Debugging
+    }
+  };
+
+  const handleSubmit = async () => {
+    console.log('Submitting application...'); // Debugging
+    console.log('Resume file:', resumeFile); // Debugging
+    console.log('Selected job:', selectedJob); // Debugging
+    console.log('User ID:', user?.id); // Debugging
+  
+    if (!resumeFile || !selectedJob || !user?.id) {
+      alert('Please select a resume file, ensure a job is selected, and you are logged in.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('resume', resumeFile);
+    formData.append('job_id', selectedJob.id.toString()); // Append the job ID from the selected job
+    formData.append('user_id', user.id.toString()); // Ensure user ID is a string
+  
+    try {
+      const response = await fetch('/api/application', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit application');
+      }
+  
+      const result = await response.json();
+      alert('Application submitted successfully!');
+      handleApplyClose();
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('Failed to submit application');
+    }
+  };
+
 
   if (loading) {
     return (
@@ -140,10 +193,61 @@ export default function JobList() {
             {selectedJob?.salary.toLocaleString()}
           </Typography>
           <Button
+            onClick={handleApplyOpen}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300 mr-2"
+          >
+            Apply
+          </Button>
+          <Button
             onClick={handleClose}
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
           >
             Close
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Modal for Apply */}
+      <Modal
+        open={applyModalOpen}
+        onClose={handleApplyClose}
+        aria-labelledby="apply-modal-title"
+        aria-describedby="apply-modal-description"
+      >
+        <Box
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-2xl p-6 outline-none"
+        >
+          <Typography
+            id="apply-modal-title"
+            variant="h6"
+            component="h2"
+            className="text-2xl font-bold text-gray-800 mb-4"
+          >
+            Apply for {selectedJob?.title}
+          </Typography>
+          <Typography
+            id="apply-modal-description"
+            className="text-gray-700 mb-4"
+          >
+            Please upload your resume to apply for this job.
+          </Typography>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="mb-4"
+            accept=".pdf" // Ensure only PDF files are accepted
+          />
+          <Button
+            onClick={handleSubmit}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300 mr-2"
+          >
+            Submit
+          </Button>
+          <Button
+            onClick={handleApplyClose}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+          >
+            Cancel
           </Button>
         </Box>
       </Modal>

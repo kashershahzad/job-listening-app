@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@mui/material';
 import CreateJobForm from '@/app/components/createjob/CreateJobForm';
 import JobCard from '@/app/components/createjob/JobCard';
+import { useUser } from '@/context/UserContext'
 
 export default function JobPostForm() {
   const [jobs, setJobs] = useState([]);
@@ -14,7 +15,7 @@ export default function JobPostForm() {
     const response = await fetch('/api/jobs');
     const data = await response.json();
     console.log('API Response:', data);
-    setJobs(data.jobs || []); // Fallback to an empty array if `data.jobs` is undefined
+    setJobs(data.jobs || []);
   };
 
   useEffect(() => {
@@ -22,10 +23,14 @@ export default function JobPostForm() {
   }, []);
 
   const handleCreateJob = async (formData) => {
+    if (!user) {
+      console.error("User not found!");
+      return;
+    }
     const response = await fetch('/api/jobs', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, userId: user.id })
     });
     if (response.ok) {
       fetchJobs();

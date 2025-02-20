@@ -122,6 +122,7 @@ export default function JobDetailsModal({ open, onClose, job, onDelete, onUpdate
               <Button variant="contained" color="secondary" onClick={() => handleDecline(application.id)}>
                 Decline
               </Button>
+              
             </div>
           </Box>
         ))}

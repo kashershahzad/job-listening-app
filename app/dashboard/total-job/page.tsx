@@ -1,7 +1,29 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Button, Modal, Box, CircularProgress } from '@mui/material';
-import { useUser } from '@/context/UserContext'; // Adjust the import path
+
+import React, { useEffect, useState } from 'react';
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Modal,
+  Box,
+  Avatar,
+  Chip,
+  CircularProgress
+} from '@mui/material';
+import {
+  Work as WorkIcon,
+  LocationOn as LocationIcon,
+  AttachMoney as MoneyIcon,
+} from '@mui/icons-material';
+import { motion } from 'framer-motion';
+
+interface User {
+  id: string;
+}
 
 interface Job {
   id: number;
@@ -12,34 +34,39 @@ interface Job {
   salary: number;
 }
 
+// Mock useUser hook - replace with your actual implementation
+const useUser = () => {
+  return {
+    user: { id: '1' } as User
+  };
+};
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: { xs: '90%', sm: '75%', md: '50%' },
+  bgcolor: 'background.paper',
+  borderRadius: 3,
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [applyModalOpen, setApplyModalOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const { user } = useUser(); // Get the user from the context
+  const { user } = useUser();
 
-  const handleOpen = (job: Job) => {
-    setSelectedJob(job);
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
-
-  const handleApplyOpen = () => {
-    setApplyModalOpen(true);
-  };
-  const handleApplyClose = () => setApplyModalOpen(false);
-
-  
   useEffect(() => {
     fetch('/api/jobs')
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch jobs');
-        }
+        if (!response.ok) throw new Error('Failed to fetch jobs');
         return response.json();
       })
       .then((data) => {
@@ -54,203 +81,233 @@ export default function JobList() {
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
+    if (event.target.files?.[0]) {
       setResumeFile(event.target.files[0]);
-      console.log('Resume file selected:', event.target.files[0]); // Debugging
     }
   };
 
   const handleSubmit = async () => {
-    console.log('Submitting application...'); // Debugging
-    console.log('Resume file:', resumeFile); // Debugging
-    console.log('Selected job:', selectedJob); // Debugging
-    console.log('User ID:', user?.id); // Debugging
-  
     if (!resumeFile || !selectedJob || !user?.id) {
-      alert('Please select a resume file, ensure a job is selected, and you are logged in.');
+      alert('Please select a resume file and ensure you are logged in.');
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('resume', resumeFile);
-    formData.append('job_id', selectedJob.id.toString()); // Append the job ID from the selected job
-    formData.append('user_id', user.id.toString()); // Ensure user ID is a string
-  
+    formData.append('job_id', selectedJob.id.toString());
+    formData.append('user_id', user.id.toString());
+
     try {
       const response = await fetch('/api/application', {
         method: 'POST',
         body: formData,
       });
-  
-      if (!response.ok) {
-        throw new Error('Failed to submit application');
-      }
-  
-      const result = await response.json();
+
+      if (!response.ok) throw new Error('Failed to submit application');
+
+      await response.json();
       alert('Application submitted successfully!');
-      handleApplyClose();
+      setIsApplyOpen(false);
     } catch (error) {
       console.error('Error submitting application:', error);
       alert('Failed to submit application');
     }
   };
 
-
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <CircularProgress className="text-blue-500" />
-      </div>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress size={60} />
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-8 text-lg text-red-500">
-        Error: {error}
-      </div>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="64px">
+        <Typography color="error" variant="h6">
+          Error: {error}
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-        Job Listings
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
-          <Card
-            key={job.id}
-            className="hover:shadow-xl transition-shadow duration-300 rounded-lg border border-gray-200 transform hover:scale-105 transition-transform duration-300"
-          >
-            <CardContent className="p-6">
-              <Typography
-                variant="h5"
-                component="div"
-                className="font-bold text-xl text-gray-800 mb-2"
+    <Box sx={{ minHeight: '100vh', py: 6, bgcolor: 'grey.50' }}>
+      <Container>
+        <Grid container spacing={3}>
+          {jobs.map((job) => (
+            <Grid item xs={12} sm={6} md={4} key={job.id}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
               >
-                {job.title}
+                <Card
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRadius: 4,
+                    bgcolor: 'rgba(255, 255, 255, 0.7)',
+                    backdropFilter: 'blur(10px)',
+                    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                    '&:hover': {
+                      transform: 'scale(1.03)',
+                      boxShadow: 8,
+                    },
+                  }}
+                >
+                  <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                    <Avatar
+                      sx={{
+                        bgcolor: 'primary.main',
+                        width: 64,
+                        height: 64,
+                        mb: 2
+                      }}
+                    >
+                      <WorkIcon sx={{ fontSize: 32 }} />
+                    </Avatar>
+
+                    <Typography variant="h5" component="h3" gutterBottom align="center" fontWeight="bold">
+                      {job.title}
+                    </Typography>
+
+                    <Chip
+                      label={job.category}
+                      sx={{
+                        mb: 2,
+                        background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
+                        color: 'white',
+                      }}
+                    />
+
+                    <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
+                      {job.description}
+                    </Typography>
+
+                    <Box sx={{ mt: 'auto', display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+                      <Chip
+                        icon={<LocationIcon />}
+                        label={job.location}
+                        sx={{ bgcolor: 'blue.50', color: 'blue.700' }}
+                      />
+                      <Chip
+                        icon={<MoneyIcon />}
+                        label={`$${job.salary.toLocaleString()}`}
+                        sx={{ bgcolor: 'green.50', color: 'green.700' }}
+                      />
+                    </Box>
+
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{
+                        mt: 3,
+                        background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
+                        borderRadius: 2,
+                        boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)',
+                      }}
+                      onClick={() => {
+                        setSelectedJob(job);
+                        setIsDetailsOpen(true);
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Job Details Modal */}
+        <Modal
+          open={isDetailsOpen}
+          onClose={() => setIsDetailsOpen(false)}
+        >
+          <Box sx={modalStyle}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              {selectedJob?.title}
+            </Typography>
+            <Box sx={{ mb: 3 }}>
+              <Typography gutterBottom>
+                <strong>Description:</strong> {selectedJob?.description}
               </Typography>
-              <Typography
-                variant="body2"
-                className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full inline-block mb-4"
-              >
-                {job.category}
+              <Typography gutterBottom>
+                <strong>Category:</strong> {selectedJob?.category}
               </Typography>
-              <Typography className="text-gray-700 mb-2">
-                <span className="font-semibold">Location:</span> {job.location}
+              <Typography gutterBottom>
+                <strong>Location:</strong> {selectedJob?.location}
               </Typography>
-              <Typography className="text-gray-700 mb-4">
-                <span className="font-semibold">Salary:</span> $
-                {job.salary.toLocaleString()}
+              <Typography gutterBottom>
+                <strong>Salary:</strong> ${selectedJob?.salary.toLocaleString()}
               </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <Button
-                onClick={() => handleOpen(job)}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
+                variant="contained"
+                color="success"
+                onClick={() => setIsApplyOpen(true)}
               >
-                View Details
+                Apply
               </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <Button
+                variant="contained"
+                onClick={() => setIsDetailsOpen(false)}
+              >
+                Close
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
 
-      {/* Modal for Job Details */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-2xl p-6 outline-none"
+        {/* Apply Modal */}
+        <Modal
+          open={isApplyOpen}
+          onClose={() => setIsApplyOpen(false)}
         >
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            className="text-2xl font-bold text-gray-800 mb-4"
-          >
-            {selectedJob?.title}
-          </Typography>
-          <Typography
-            id="modal-modal-description"
-            className="text-gray-700 mb-4"
-          >
-            <span className="font-semibold">Description:</span>{' '}
-            {selectedJob?.description}
-          </Typography>
-          <Typography className="text-gray-700 mb-2">
-            <span className="font-semibold">Category:</span>{' '}
-            {selectedJob?.category}
-          </Typography>
-          <Typography className="text-gray-700 mb-2">
-            <span className="font-semibold">Location:</span>{' '}
-            {selectedJob?.location}
-          </Typography>
-          <Typography className="text-gray-700 mb-4">
-            <span className="font-semibold">Salary:</span> $
-            {selectedJob?.salary.toLocaleString()}
-          </Typography>
-          <Button
-            onClick={handleApplyOpen}
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300 mr-2"
-          >
-            Apply
-          </Button>
-          <Button
-            onClick={handleClose}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
-          >
-            Close
-          </Button>
-        </Box>
-      </Modal>
-
-      {/* Modal for Apply */}
-      <Modal
-        open={applyModalOpen}
-        onClose={handleApplyClose}
-        aria-labelledby="apply-modal-title"
-        aria-describedby="apply-modal-description"
-      >
-        <Box
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-2xl p-6 outline-none"
-        >
-          <Typography
-            id="apply-modal-title"
-            variant="h6"
-            component="h2"
-            className="text-2xl font-bold text-gray-800 mb-4"
-          >
-            Apply for {selectedJob?.title}
-          </Typography>
-          <Typography
-            id="apply-modal-description"
-            className="text-gray-700 mb-4"
-          >
-            Please upload your resume to apply for this job.
-          </Typography>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="mb-4"
-            accept=".pdf" // Ensure only PDF files are accepted
-          />
-          <Button
-            onClick={handleSubmit}
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300 mr-2"
-          >
-            Submit
-          </Button>
-          <Button
-            onClick={handleApplyClose}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Modal>
-    </div>
+          <Box sx={modalStyle}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Apply for {selectedJob?.title}
+            </Typography>
+            <Typography gutterBottom>
+              Please upload your resume to apply for this job.
+            </Typography>
+            <Box
+              component="input"
+              type="file"
+              onChange={handleFileChange}
+              accept=".pdf"
+              sx={{
+                width: '100%',
+                mb: 3,
+                p: 1,
+                border: '1px solid',
+                borderColor: 'grey.300',
+                borderRadius: 1,
+              }}
+            />
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => setIsApplyOpen(false)}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+      </Container>
+    </Box>
   );
 }

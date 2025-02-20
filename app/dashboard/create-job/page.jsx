@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Button } from '@mui/material';
+import { Button, Grid, Container } from '@mui/material';
 import CreateJobForm from '@/app/components/createjob/CreateJobForm';
 import JobCard from '@/app/components/createjob/JobCard';
 import { useUser } from '@/context/UserContext'
@@ -63,10 +63,16 @@ export default function JobPostForm() {
   };
 
   return (
-    <div className="p-4">
-      <Button variant="contained" color="primary" onClick={() => setIsFormOpen(true)}>
+    <Container maxWidth="xl" sx={{ p: 4 }}>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={() => setIsFormOpen(true)}
+        sx={{ mb: 4 }}
+      >
         Create Job
       </Button>
+      
       {isFormOpen && (
         <CreateJobForm
           onSubmit={selectedJob ? handleUpdateJob : handleCreateJob}
@@ -77,19 +83,20 @@ export default function JobPostForm() {
           initialData={selectedJob}
         />
       )}
-      <div className="mt-4">
+
+      <Grid container spacing={3}>
         {Array.isArray(jobs) && jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            onDelete={handleDeleteJob}
-            onUpdate={(job) => {
-              setSelectedJob(job);
-              setIsFormOpen(true);
-            }}
-          />
+          <Grid item xs={12} sm={6} md={4} key={job.id}>
+            <JobCard
+              job={job}
+              onDelete={handleDeleteJob}
+              onUpdate={(job) => {
+                setSelectedJob(job);
+                setIsFormOpen(true);
+              }}
+            />
+          </Grid>
         ))}
-      </div>
-    </div>
-  );
-}
+      </Grid>
+    </Container>
+  );}

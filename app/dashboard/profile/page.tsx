@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useUser } from '@/context/UserContext';
-import { Avatar, Typography, Paper, Grid, Button } from '@mui/material';
-import { ExitToApp } from '@mui/icons-material'; // Import the sign-out icon
+import { Typography, Paper, Grid, Button, Divider } from '@mui/material';
+import { ExitToApp } from '@mui/icons-material';
 
 const ProfilePage: React.FC = () => {
   const { user, setUser } = useUser();
@@ -22,8 +22,7 @@ const ProfilePage: React.FC = () => {
       });
 
       if (response.ok) {
-        // Clear the user context or redirect to the login page
-        setUser(null); // Assuming setUser is a function to clear the user context
+        setUser(null); // Clear the user context
         window.location.href = '/signin'; // Redirect to the login page
       } else {
         console.error('Failed to sign out');
@@ -34,55 +33,94 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 flex items-center justify-center p-4">
-      <Paper className="w-full max-w-4xl p-8 rounded-lg shadow-lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4} className="flex flex-col items-center">
-            <Avatar
-              sx={{ width: 150, height: 150 }}
-              className="border-4 border-white shadow-lg"
-            >
-              {user?.name.charAt(0)}
-            </Avatar>
-            <Typography variant="h5" className="mt-4 font-bold">
-              {user.name}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {user.email}
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<ExitToApp />} // Use the sign-out icon
-              className="mt-4"
-              onClick={handleSignOut} // Add the sign-out handler
-            >
-              Sign Out
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <Typography variant="h4" className="font-bold mb-4">
-              Profile Information
-            </Typography>
-            <div className="space-y-4">
-              <div>
-                <Typography variant="subtitle1" className="font-bold">
-                  Name
-                </Typography>
-                <Typography variant="body1">{user.name}</Typography>
-              </div>
-              <div>
-                <Typography variant="subtitle1" className="font-bold">
-                  Email
-                </Typography>
-                <Typography variant="body1">{user.email}</Typography>
-              </div>
-              <div>
-                <Typography variant="subtitle1" className="font-bold">
-                  User ID
-                </Typography>
-                <Typography variant="body1">{user.id}</Typography>
-              </div>
-            </div>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+      }}
+    >
+      <Paper
+        sx={{
+          width: '100%',
+          maxWidth: '900px',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          backgroundColor: '#fff', // White card background
+          boxShadow: '0 8px 32px rgba(0, 123, 255, 0.2)', // Blue shadow
+          display: 'flex',
+        }}
+      >
+        {/* Left Side: Profile Overview */}
+        <Grid
+          container
+          sx={{
+            padding: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(to bottom, #007bff, #0056b3)', // Blue gradient
+            color: '#fff',
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+            {user.name}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            {user.email}
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<ExitToApp />}
+            sx={{
+              backgroundColor: '#ffffff',
+              color: '#007bff',
+              '&:hover': {
+                backgroundColor: '#e0e7ff',
+              },
+            }}
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </Button>
+        </Grid>
+
+        {/* Divider */}
+        <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#90caf9' }} />
+
+        {/* Right Side: Profile Details */}
+        <Grid container sx={{ padding: '32px', background: '#fff' }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 4, color: '#007bff' }}>
+            Profile Details
+          </Typography>
+          <Grid container spacing={3}>
+          <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#1565c0' }}>
+                User ID
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#333' }}>
+                {user.id}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#1565c0' }}>
+                Name
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#333' }}>
+                {user.name}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#1565c0' }}>
+                Email
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#333' }}>
+                {user.email}
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Paper>

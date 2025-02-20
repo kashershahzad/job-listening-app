@@ -1,25 +1,35 @@
 'use client'
 
-// context/UserContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 // Define the shape of the user object
+interface Job {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  location: string;
+  salary: number;
+  status:string
+}
+
 interface User {
   id: string;
   email: string;
   name: string;
+  role: string;
+  appliedJobs: Job[];
 }
 
-// Define the context type, which will store the user data and the setter function
+// Define the context type
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-// Create the context with a default value (null for user and a function for setUser)
+// Create the context
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Create a provider component
 interface UserProviderProps {
   children: ReactNode;
 }
@@ -28,17 +38,25 @@ export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Fetch session data from your API
     const fetchSessionData = async () => {
-      const response = await fetch('/api/auth/sessiom');
-      const data = await response.json();
-      if (data.id) {
-        setUser(data); // Assuming the API returns the user data in the expected format
+      try {
+        const response = await fetch('/api/auth/session');
+        const data = await response.json();
+  
+        if (data.id) {
+          setUser(data);
+        } else {
+          console.warn("No user session found");
+        }
+      } catch (error) {
+        console.error("Error fetching session data:", error);
       }
     };
-
+  
     fetchSessionData();
   }, []);
+  
+ 
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

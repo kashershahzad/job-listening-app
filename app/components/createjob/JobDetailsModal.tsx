@@ -124,6 +124,7 @@ export default function JobDetailsModal({ open, onClose, job, onDelete, onUpdate
               </Button>
             </div>
           </Box>
+          
         ))}
         <div className="mt-4 space-x-2">
           <Button variant="outlined" onClick={onClose}>

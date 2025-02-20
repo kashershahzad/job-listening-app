@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Toolbar, Drawer, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import { useUser } from '@/context/UserContext'; // Adjust the import path accordingly
 
 interface MenuItem {
   text: string;
@@ -20,6 +21,7 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
+  const { user } = useUser(); // Get the user from the context
 
   const menuItems: MenuItem[] = [
     { text: 'Profile', icon: '👤', path: '/dashboard/profile' },
@@ -27,6 +29,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { text: 'Total Jobs', icon: '📋', path: '/dashboard/total-job' },
     { text: 'Applied Jobs', icon: '📋', path: '/dashboard/job-Requests' },
   ];
+
+  // Filter menu items based on the user's role
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (user?.role === 'admin') {
+      return true; // Show all items for admin
+    } else if (user?.role === 'user') {
+      return item.text !== 'Create Job'; // Hide 'Create Job' for regular users
+    }
+    return false; // Hide all items if no user is logged in
+  });
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -52,7 +64,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               <CloseIcon className="text-white" />
             </IconButton>
           </div>
-          {menuItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <Link key={item.text} href={item.path} passHref>
               <div
                 className={`flex items-center space-x-4 px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-gray-700 ${pathname === item.path ? 'bg-gray-600' : ''}`}
@@ -68,7 +80,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-64 bg-gray-900 text-white min-h-screen flex-col p-4">
         <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
-        {menuItems.map((item) => (
+        {filteredMenuItems.map((item) => (
           <Link key={item.text} href={item.path} passHref>
             <div
               className={`flex items-center space-x-4 px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-gray-700 ${pathname === item.path ? 'bg-gray-600' : ''}`}

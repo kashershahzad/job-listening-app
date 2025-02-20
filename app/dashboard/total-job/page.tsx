@@ -12,7 +12,8 @@ import {
   Box,
   Avatar,
   Chip,
-  CircularProgress
+  CircularProgress,
+  TextField,
 } from '@mui/material';
 import {
   Work as WorkIcon,
@@ -21,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
+// Define types
 interface User {
   id: string;
 }
@@ -35,12 +37,13 @@ interface Job {
 }
 
 // Mock useUser hook - replace with your actual implementation
-const useUser = () => {
+const useUser = (): { user: User } => {
   return {
-    user: { id: '1' } as User
+    user: { id: '1' },
   };
 };
 
+// Modal style
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -53,49 +56,60 @@ const modalStyle = {
   p: 4,
 };
 
-export default function JobList() {
+const JobList: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [isApplyOpen, setIsApplyOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
+  const [isApplyOpen, setIsApplyOpen] = useState<boolean>(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [qualification, setQualification] = useState<string>('');
   const { user } = useUser();
 
+  // Fetch jobs on component mount
   useEffect(() => {
     fetch('/api/jobs')
       .then((response) => {
         if (!response.ok) throw new Error('Failed to fetch jobs');
         return response.json();
       })
-      .then((data) => {
+      .then((data: { jobs: Job[] }) => {
         setJobs(data.jobs);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         console.error('Error fetching jobs:', error);
         setError(error.message);
         setLoading(false);
       });
   }, []);
 
+  // Handle file input change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
       setResumeFile(event.target.files[0]);
     }
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
-    if (!resumeFile || !selectedJob || !user?.id) {
-      alert('Please select a resume file and ensure you are logged in.');
+    if (!resumeFile || !selectedJob || !user?.id || !name || !email || !phoneNumber || !qualification) {
+      alert('Please fill out all fields and ensure you are logged in.');
       return;
     }
 
     const formData = new FormData();
     formData.append('resume', resumeFile);
     formData.append('job_id', selectedJob.id.toString());
-    formData.append('user_id', user.id.toString());
+    formData.append('user_id', user.id);
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('qualification', qualification);
 
     try {
       const response = await fetch('/api/application', {
@@ -114,6 +128,7 @@ export default function JobList() {
     }
   };
 
+  // Loading state
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -122,6 +137,7 @@ export default function JobList() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="64px">
@@ -164,7 +180,7 @@ export default function JobList() {
                         bgcolor: 'primary.main',
                         width: 64,
                         height: 64,
-                        mb: 2
+                        mb: 2,
                       }}
                     >
                       <WorkIcon sx={{ fontSize: 32 }} />
@@ -273,41 +289,78 @@ export default function JobList() {
             <Typography variant="h4" component="h2" gutterBottom>
               Apply for {selectedJob?.title}
             </Typography>
-            <Typography gutterBottom>
-              Please upload your resume to apply for this job.
-            </Typography>
             <Box
-              component="input"
-              type="file"
-              onChange={handleFileChange}
-              accept=".pdf"
+              component="form"
               sx={{
-                width: '100%',
-                mb: 3,
-                p: 1,
-                border: '1px solid',
-                borderColor: 'grey.300',
-                borderRadius: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
               }}
-            />
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => setIsApplyOpen(false)}
-              >
-                Cancel
-              </Button>
+            >
+              <TextField
+                label="Name"
+                value={name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Phone Number"
+                value={phoneNumber}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Qualification"
+                value={qualification}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQualification(e.target.value)}
+                fullWidth
+                required
+              />
+              <Box
+                component="input"
+                type="file"
+                onChange={handleFileChange}
+                accept=".pdf"
+                sx={{
+                  width: '100%',
+                  mb: 3,
+                  p: 1,
+                  border: '1px solid',
+                  borderColor: 'grey.300',
+                  borderRadius: 1,
+                }}
+              />
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setIsApplyOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Modal>
       </Container>
     </Box>
   );
-}
+};
+
+export default JobList;

@@ -37,11 +37,17 @@ model Job {
 }
 
 model Application {
-  id     Int    @id @default(autoincrement())
-  jobId  Int
-  userId Int
-  resume String
-  status String @default("pending")
-  job    Job    @relation(fields: [jobId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  id            Int     @id @default(autoincrement())
+  jobId         Int
+  userId        Int
+  name          String?  // Made nullable
+  email         String?  // Made nullable
+  phoneNumber   String?  // Made nullable
+  qualification String?  // Made nullable
+  resume        String
+  status        String  @default("pending")
+  job           Job     @relation(fields: [jobId], references: [id])
+  user          User    @relation(fields: [userId], references: [id])
 }
+
+

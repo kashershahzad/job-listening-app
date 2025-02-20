@@ -4,7 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import { Readable } from "stream";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -64,15 +64,16 @@ export async function POST(req: Request) {
     console.log("Request Body:", reqAny.body);
     console.log("Request File:", reqAny.file);
 
-    const { job_id, user_id } = reqAny.body;
+    const { job_id, user_id, name, email, phoneNumber, qualification } = reqAny.body;
     const resumeFile = reqAny.file;
 
-    if (!job_id || !user_id || !resumeFile || !resumeFile.buffer) {
+    if (!job_id || !user_id || !name || !email || !phoneNumber || !qualification || !resumeFile || !resumeFile.buffer) {
       return NextResponse.json(
-        { error: "Job ID, User ID, and Resume are required" },
+        { error: "Job ID, User ID, Name, Email, Phone Number, Qualification, and Resume are required" },
         { status: 400 }
       );
     }
+
     const jobId = parseInt(job_id, 10);
     const userId = parseInt(user_id, 10);
 
@@ -97,24 +98,21 @@ export async function POST(req: Request) {
     if (!cloudinaryResponse || !cloudinaryResponse.secure_url) {
       throw new Error("Cloudinary upload failed");
     }
+
     const application = await prisma.application.create({
       data: {
+        jobId,
+        userId,
+        name,
+        email,
+        phoneNumber,
+        qualification,
         resume: cloudinaryResponse.secure_url,
         status: "pending",
-        job: {
-          connect: {
-            id: jobId, // Use parsed integer ID
-          },
-        },
-        user: {
-          connect: {
-            id: userId, // Use parsed integer ID
-          },
-        },
       },
     });
 
-    console.log(application)
+    console.log(application);
 
     return NextResponse.json({ success: true, application }, { status: 201 });
   } catch (error: unknown) {

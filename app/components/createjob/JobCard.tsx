@@ -169,7 +169,6 @@ export default function JobCard({ job, onDelete, onUpdate }: JobCardProps) {
           </IconButton>
         </Stack>
       </CardContent>
-
       <JobDetailsModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

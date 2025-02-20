@@ -25,9 +25,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { text: 'Profile', icon: '👤', path: '/dashboard/profile' },
     { text: 'Create Job', icon: '➕', path: '/dashboard/create-job' },
     { text: 'Total Jobs', icon: '📋', path: '/dashboard/total-job' },
-    { text: 'Posted Jobs', icon: '📋', path: '/dashboard/posted-jobs' },
     { text: 'Applied Jobs', icon: '📋', path: '/dashboard/job-Requests' },
-    { text: 'Hiring Requests', icon: '📋', path: '/dashboard/posted-jobs' },
   ];
 
   return (

@@ -6,11 +6,15 @@ import { usePathname } from 'next/navigation';
 import { Toolbar, Drawer, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import PersonIcon from '@mui/icons-material/Person'; // Profile icon
+import AddIcon from '@mui/icons-material/Add'; // Create Job icon
+import ListIcon from '@mui/icons-material/List'; // Total Jobs icon
+import AssignmentIcon from '@mui/icons-material/Assignment'; // Applied Jobs icon
 import { useUser } from '@/context/UserContext'; // Adjust the import path accordingly
 
 interface MenuItem {
   text: string;
-  icon: string;
+  icon: ReactNode; // Change the type to ReactNode to accommodate MUI icons
   path: string;
 }
 
@@ -24,10 +28,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user } = useUser(); // Get the user from the context
 
   const menuItems: MenuItem[] = [
-    { text: 'Profile', icon: '👤', path: '/dashboard/profile' },
-    { text: 'Create Job', icon: '➕', path: '/dashboard/create-job' },
-    { text: 'Total Jobs', icon: '📋', path: '/dashboard/total-job' },
-    { text: 'Applied Jobs', icon: '📋', path: '/dashboard/job-Requests' },
+    { text: 'Profile', icon: <PersonIcon />, path: '/dashboard/profile' },
+    { text: 'Create Job', icon: <AddIcon />, path: '/dashboard/create-job' },
+    { text: 'Total Jobs', icon: <ListIcon />, path: '/dashboard/total-job' },
+    { text: 'Applied Jobs', icon: <AssignmentIcon />, path: '/dashboard/job-Requests' },
+    { text: 'Job requests', icon: <AssignmentIcon />, path: '/dashboard/job-request' },
   ];
 
   // Filter menu items based on the user's role
@@ -79,7 +84,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-64 bg-gray-900 text-white min-h-screen flex-col p-4">
-        <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
         {filteredMenuItems.map((item) => (
           <Link key={item.text} href={item.path} passHref>
             <div

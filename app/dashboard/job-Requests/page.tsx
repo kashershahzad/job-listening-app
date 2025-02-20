@@ -18,8 +18,24 @@ const AppliedJobsPage = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-6">
+    <div className="min-h-screen py-12 px-6 ">
       <Container>
+        {/* Added Heading */}
+        <div className="text-center mb-12">
+          {/* <Typography
+            variant="h3"
+            className="font-bold text-blue-600"
+            sx={{
+              fontSize: '2.5rem',
+              fontWeight: 700,
+              color: '#2563EB',
+              marginBottom: '2rem',
+            }}
+          >
+            Applied Jobs
+          </Typography> */}
+        </div>
+
         {user.appliedJobs.length === 0 ? (
           <div className="flex justify-center items-center h-64">
             <Typography variant="h6" className="text-gray-600">

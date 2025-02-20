@@ -4,6 +4,7 @@ import React from 'react';
 import { useUser } from '@/context/UserContext';
 import { Typography, Paper, Grid, Button, Divider } from '@mui/material';
 import { ExitToApp } from '@mui/icons-material';
+import Appliedjobs from "@/app/dashboard/job-Requests/page"
 
 const ProfilePage: React.FC = () => {
   const { user, setUser } = useUser();
@@ -33,6 +34,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
+    <>
     <div
       style={{
         minHeight: '100vh',
@@ -125,6 +127,8 @@ const ProfilePage: React.FC = () => {
         </Grid>
       </Paper>
     </div>
+    <Appliedjobs />
+    </>
   );
 };
 

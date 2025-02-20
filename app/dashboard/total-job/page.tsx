@@ -199,9 +199,9 @@ const JobList: React.FC = () => {
                       }}
                     />
 
-                    <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
+                    {/* <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
                       {job.description}
-                    </Typography>
+                    </Typography> */}
 
                     <Box sx={{ mt: 'auto', display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
                       <Chip

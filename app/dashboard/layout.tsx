@@ -76,7 +76,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (user?.role === 'admin') {
       return true;
     } else if (user?.role === 'user') {
-      return item.text !== 'Create Job';
+      return item.text !== 'Create Job'&&
+       item.text !== 'Job Requests';
     }
     return false;
   });

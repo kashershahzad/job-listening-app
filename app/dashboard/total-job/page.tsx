@@ -131,15 +131,25 @@ const JobList: React.FC = () => {
     formData.append('phoneNumber', phoneNumber);
     formData.append('qualification', qualification);
 
+    console.log('FormData:', formData); // Log FormData
+
     try {
       const response = await fetch('/api/application', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) throw new Error('Failed to submit application');
+      console.log('Response:', response); // Log response
 
-      await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error data:', errorData); // Log error data
+        throw new Error('Failed to submit application');
+      }
+
+      const responseData = await response.json();
+      console.log('Response data:', responseData); // Log response data
+
       alert('Application submitted successfully!');
       setIsApplyOpen(false);
     } catch (error) {

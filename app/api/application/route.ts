@@ -49,7 +49,7 @@ export const config = {
 
 export async function POST(req: Request) {
   try {
-    
+
     const arrayBuffer = await req.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
             } else {
               resolve(result);
             }
-          }
+          } 
         )
         .end(resumeFile.buffer);
     });
@@ -125,7 +125,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const applications = await prisma.application.findMany({
       include: {

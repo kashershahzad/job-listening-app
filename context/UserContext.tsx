@@ -1,8 +1,9 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-// Define the shape of the user object
+// Define the shape of the job object
 interface Job {
   id: number;
   title: string;
@@ -10,9 +11,10 @@ interface Job {
   category: string;
   location: string;
   salary: number;
-  status:string
+  status: string;
 }
 
+// Define the shape of the user object
 interface User {
   id: string;
   email: string;
@@ -25,6 +27,7 @@ interface User {
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  refetchUser: () => void;
 }
 
 // Create the context
@@ -37,29 +40,25 @@ interface UserProviderProps {
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const fetchSessionData = async () => {
-      try {
-        const response = await fetch('/api/auth/session');
-        const data = await response.json();
-  
-        if (data.id) {
-          setUser(data);
-        } else {
-          console.warn("No user session found");
-        }
-      } catch (error) {
-        console.error("Error fetching session data:", error);
+  const { data, refetch }: UseQueryResult<User | null, Error> = useQuery({
+    queryKey: ["session"],
+    queryFn: async (): Promise<User | null> => {
+      const response = await fetch("/api/auth/session");
+      if (!response.ok) {
+        throw new Error("Failed to fetch session");
       }
-    };
-  
-    fetchSessionData();
-  }, []);
-  
- 
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5, // Cache session for 5 minutes
+  });
+
+  // Update state when data changes
+  if (data && user !== data) {
+    setUser(data);
+  }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, refetchUser: refetch }}>
       {children}
     </UserContext.Provider>
   );

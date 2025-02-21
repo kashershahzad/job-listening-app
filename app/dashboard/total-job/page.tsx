@@ -17,9 +17,10 @@ import {
   MenuItem,
   Select,
   FormControl,
-  InputLabel,IconButton
+  InputLabel,
+  IconButton,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close'
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Work as WorkIcon,
   LocationOn as LocationIcon,
@@ -80,6 +81,7 @@ const JobList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [categories, setCategories] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // New state for loading
 
   // Fetch jobs on component mount
   useEffect(() => {
@@ -92,8 +94,8 @@ const JobList: React.FC = () => {
         setJobs(data.jobs);
         setLoading(false);
         // Extract unique categories and locations
-        const uniqueCategories = Array.from(new Set(data.jobs.map(job => job.category)));
-        const uniqueLocations = Array.from(new Set(data.jobs.map(job => job.location)));
+        const uniqueCategories = Array.from(new Set(data.jobs.map((job) => job.category)));
+        const uniqueLocations = Array.from(new Set(data.jobs.map((job) => job.location)));
         setCategories(uniqueCategories);
         setLocations(uniqueLocations);
       })
@@ -118,6 +120,8 @@ const JobList: React.FC = () => {
       return;
     }
 
+    setIsSubmitting(true); // Start loading
+
     const formData = new FormData();
     formData.append('resume', resumeFile);
     formData.append('job_id', selectedJob.id.toString());
@@ -141,13 +145,17 @@ const JobList: React.FC = () => {
     } catch (error) {
       console.error('Error submitting application:', error);
       alert('Failed to submit application');
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
   // Filter jobs based on selected category and location
-  const filteredJobs = jobs.filter(job => {
-    return (!selectedCategory || job.category === selectedCategory) &&
-      (!selectedLocation || job.location === selectedLocation);
+  const filteredJobs = jobs.filter((job) => {
+    return (
+      (!selectedCategory || job.category === selectedCategory) &&
+      (!selectedLocation || job.location === selectedLocation)
+    );
   });
 
   // Loading state
@@ -188,12 +196,8 @@ const JobList: React.FC = () => {
           </Button>
         </Box>
 
-        <Modal
-          open={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-        >
+        <Modal open={isFilterOpen} onClose={() => setIsFilterOpen(false)}>
           <Box sx={modalStyle}>
-            {/* Close Icon Button */}
             <IconButton
               aria-label="close"
               onClick={() => setIsFilterOpen(false)}
@@ -222,8 +226,10 @@ const JobList: React.FC = () => {
                   label="Category"
                 >
                   <MenuItem value="">All Categories</MenuItem>
-                  {categories.map(category => (
-                    <MenuItem key={category} value={category}>{category}</MenuItem>
+                  {categories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -235,14 +241,17 @@ const JobList: React.FC = () => {
                   label="Location"
                 >
                   <MenuItem value="">All Locations</MenuItem>
-                  {locations.map(location => (
-                    <MenuItem key={location} value={location}>{location}</MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem key={location} value={location}>
+                      {location}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Box>
           </Box>
         </Modal>
+
         <Grid container spacing={3}>
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
@@ -334,10 +343,7 @@ const JobList: React.FC = () => {
         </Grid>
 
         {/* Job Details Modal */}
-        <Modal
-          open={isDetailsOpen}
-          onClose={() => setIsDetailsOpen(false)}
-        >
+        <Modal open={isDetailsOpen} onClose={() => setIsDetailsOpen(false)}>
           <Box sx={modalStyle}>
             <Typography variant="h4" component="h2" gutterBottom>
               {selectedJob?.title}
@@ -375,10 +381,7 @@ const JobList: React.FC = () => {
         </Modal>
 
         {/* Apply Modal */}
-        <Modal
-          open={isApplyOpen}
-          onClose={() => setIsApplyOpen(false)}
-        >
+        <Modal open={isApplyOpen} onClose={() => setIsApplyOpen(false)}>
           <Box sx={modalStyle}>
             <Typography variant="h4" component="h2" gutterBottom>
               Apply for {selectedJob?.title}
@@ -439,8 +442,16 @@ const JobList: React.FC = () => {
                   variant="contained"
                   color="success"
                   onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 1,
+                  }}
                 >
-                  Submit
+                  {isSubmitting && <CircularProgress size={24} sx={{ color: 'white' }} />}
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </Button>
                 <Button
                   variant="contained"

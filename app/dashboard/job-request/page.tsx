@@ -197,7 +197,7 @@ const ApplicationList: React.FC = () => {
                 >
                   Details
                 </Button>
-                <Button
+                {/* <Button
                   variant="contained"
                   color="success"
                   startIcon={<CheckCircleIcon />}
@@ -214,7 +214,7 @@ const ApplicationList: React.FC = () => {
                   disabled={application.status !== 'pending'}
                 >
                   Decline
-                </Button>
+                </Button> */}
               </CardActions>
             </Card>
           </Grid>

@@ -14,11 +14,17 @@ import {
   Chip,
   CircularProgress,
   TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close'
 import {
   Work as WorkIcon,
   LocationOn as LocationIcon,
   AttachMoney as MoneyIcon,
+  FilterList as FilterIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
@@ -69,6 +75,11 @@ const JobList: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [qualification, setQualification] = useState<string>('');
   const { user } = useUser();
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
 
   // Fetch jobs on component mount
   useEffect(() => {
@@ -80,6 +91,11 @@ const JobList: React.FC = () => {
       .then((data: { jobs: Job[] }) => {
         setJobs(data.jobs);
         setLoading(false);
+        // Extract unique categories and locations
+        const uniqueCategories = Array.from(new Set(data.jobs.map(job => job.category)));
+        const uniqueLocations = Array.from(new Set(data.jobs.map(job => job.location)));
+        setCategories(uniqueCategories);
+        setLocations(uniqueLocations);
       })
       .catch((error: Error) => {
         console.error('Error fetching jobs:', error);
@@ -128,6 +144,12 @@ const JobList: React.FC = () => {
     }
   };
 
+  // Filter jobs based on selected category and location
+  const filteredJobs = jobs.filter(job => {
+    return (!selectedCategory || job.category === selectedCategory) &&
+      (!selectedLocation || job.location === selectedLocation);
+  });
+
   // Loading state
   if (loading) {
     return (
@@ -151,92 +173,164 @@ const JobList: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', py: 6, bgcolor: 'grey.50' }}>
       <Container>
-        <Grid container spacing={3}>
-          {jobs.map((job) => (
-            <Grid item xs={12} sm={6} md={4} key={job.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card
-                  sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    borderRadius: 4,
-                    bgcolor: 'rgba(255, 255, 255, 0.7)',
-                    backdropFilter: 'blur(10px)',
-                    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                    '&:hover': {
-                      transform: 'scale(1.03)',
-                      boxShadow: 8,
-                    },
-                  }}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Button
+            variant="contained"
+            startIcon={<FilterIcon />}
+            onClick={() => setIsFilterOpen(true)}
+            sx={{
+              background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
+              borderRadius: 2,
+              boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)',
+            }}
+          >
+            Filter
+          </Button>
+        </Box>
+
+        <Modal
+          open={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+        >
+          <Box sx={modalStyle}>
+            {/* Close Icon Button */}
+            <IconButton
+              aria-label="close"
+              onClick={() => setIsFilterOpen(false)}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: 'grey.500',
+                '&:hover': {
+                  color: 'grey.700',
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <Typography variant="h4" component="h2" gutterBottom>
+              Filter Jobs
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  label="Category"
                 >
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-                    <Avatar
-                      sx={{
-                        bgcolor: 'primary.main',
-                        width: 64,
-                        height: 64,
-                        mb: 2,
-                      }}
-                    >
-                      <WorkIcon sx={{ fontSize: 32 }} />
-                    </Avatar>
+                  <MenuItem value="">All Categories</MenuItem>
+                  {categories.map(category => (
+                    <MenuItem key={category} value={category}>{category}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Location</InputLabel>
+                <Select
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  label="Location"
+                >
+                  <MenuItem value="">All Locations</MenuItem>
+                  {locations.map(location => (
+                    <MenuItem key={location} value={location}>{location}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
+        </Modal>
+        <Grid container spacing={3}>
+          {filteredJobs.length > 0 ? (
+            filteredJobs.map((job) => (
+              <Grid item xs={12} sm={6} md={4} key={job.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      borderRadius: 4,
+                      bgcolor: 'rgba(255, 255, 255, 0.7)',
+                      backdropFilter: 'blur(10px)',
+                      transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.03)',
+                        boxShadow: 8,
+                      },
+                    }}
+                  >
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                      <Avatar
+                        sx={{
+                          bgcolor: 'primary.main',
+                          width: 64,
+                          height: 64,
+                          mb: 2,
+                        }}
+                      >
+                        <WorkIcon sx={{ fontSize: 32 }} />
+                      </Avatar>
 
-                    <Typography variant="h5" component="h3" gutterBottom align="center" fontWeight="bold">
-                      {job.title}
-                    </Typography>
+                      <Typography variant="h5" component="h3" gutterBottom align="center" fontWeight="bold">
+                        {job.title}
+                      </Typography>
 
-                    <Chip
-                      label={job.category}
-                      sx={{
-                        mb: 2,
-                        background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
-                        color: 'white',
-                      }}
-                    />
-
-                    {/* <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-                      {job.description}
-                    </Typography> */}
-
-                    <Box sx={{ mt: 'auto', display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
                       <Chip
-                        icon={<LocationIcon />}
-                        label={job.location}
-                        sx={{ bgcolor: 'blue.50', color: 'blue.700' }}
+                        label={job.category}
+                        sx={{
+                          mb: 2,
+                          background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
+                          color: 'white',
+                        }}
                       />
-                      <Chip
-                        icon={<MoneyIcon />}
-                        label={`$${job.salary.toLocaleString()}`}
-                        sx={{ bgcolor: 'green.50', color: 'green.700' }}
-                      />
-                    </Box>
 
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{
-                        mt: 3,
-                        background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
-                        borderRadius: 2,
-                        boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)',
-                      }}
-                      onClick={() => {
-                        setSelectedJob(job);
-                        setIsDetailsOpen(true);
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
-          ))}
+                      <Box sx={{ mt: 'auto', display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Chip
+                          icon={<LocationIcon />}
+                          label={job.location}
+                          sx={{ bgcolor: 'blue.50', color: 'blue.700' }}
+                        />
+                        <Chip
+                          icon={<MoneyIcon />}
+                          label={`$${job.salary.toLocaleString()}`}
+                          sx={{ bgcolor: 'green.50', color: 'green.700' }}
+                        />
+                      </Box>
+
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                          mt: 3,
+                          background: 'linear-gradient(45deg, #3f51b5 30%, #2196f3 90%)',
+                          borderRadius: 2,
+                          boxShadow: '0 3px 5px 2px rgba(33, 150, 243, .3)',
+                        }}
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setIsDetailsOpen(true);
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))
+          ) : (
+            <Box sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
+              <Typography variant="h6">No jobs available</Typography>
+            </Box>
+          )}
         </Grid>
 
         {/* Job Details Modal */}

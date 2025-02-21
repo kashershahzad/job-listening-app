@@ -4,12 +4,10 @@ import React, { useState, ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  Toolbar, 
   Drawer, 
   IconButton, 
   Typography,
   Box,
-  Divider,
   useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -72,12 +70,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     },
   ];
 
+  // First filter items based on user role
   const filteredMenuItems = menuItems.filter((item) => {
     if (user?.role === 'admin') {
       return true;
     } else if (user?.role === 'user') {
-      return item.text !== 'Create Job'&&
-       item.text !== 'Job Requests';
+      // Filter out items from Admin Pannel category
+      return item.category !== 'Admin Pannel';
     }
     return false;
   });
@@ -95,28 +94,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const SidebarContent = () => (
     <Box sx={{ 
       width: 280, 
-      bgcolor: 'primary.main', // Change to blue
+      bgcolor: 'primary.main',
       color: 'white',
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
     }}>
-      {/* <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <DashboardIcon sx={{ fontSize: 32, color: 'white' }} />
-        <Typography variant="h6" sx={{ fontWeight: 600, color: 'white' }}>
-          Dashboard
-        </Typography>
-      </Box>
-      
-      <Divider sx={{ bgcolor: 'grey.800', my: 1 }} /> */}
-
       <Box sx={{ p: 2, flexGrow: 1 }}>
         {Object.entries(groupedMenuItems).map(([category, items]) => (
           <Box key={category} sx={{ mb: 3 }}>
             <Typography 
               variant="overline" 
               sx={{ 
-                color: 'grey.300', // Lighter grey for category text
+                color: 'grey.300',
                 px: 2,
                 fontSize: '0.75rem',
                 fontWeight: 600,
@@ -166,34 +156,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </Box>
         ))}
       </Box>
-
-      {/* <Box sx={{ p: 2, mt: 'auto' }}>
-        <Divider sx={{ bgcolor: 'grey.800', my: 2 }} />
-        <Box sx={{ 
-          p: 2, 
-          borderRadius: 2, 
-          bgcolor: 'rgba(255, 255, 255, 0.04)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
-        }}>
-          <AccountCircleIcon sx={{ color: 'white' }} />
-          <Box>
-            <Typography variant="body2" sx={{ fontWeight: 600, color: 'white' }}>
-              {user?.name || 'User'}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'grey.300' }}>
-              {user?.role || 'Role'}
-            </Typography>
-          </Box>
-        </Box>
-      </Box> */}
     </Box>
   );
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.100' }}>
-      {/* Mobile Menu Toggle */}
       <IconButton
         sx={{
           position: 'fixed',
@@ -210,7 +177,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <MenuIcon />
       </IconButton>
 
-      {/* Mobile Sidebar */}
       <Drawer
         anchor="left"
         open={open}
@@ -221,7 +187,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <SidebarContent />
       </Drawer>
 
-      {/* Desktop Sidebar */}
       <Box
         component="nav"
         sx={{
@@ -243,9 +208,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </Box>
       </Box>
 
-      {/* Main Content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
         {children}
       </Box>
     </Box>

@@ -35,7 +35,7 @@ const SignUpForm: React.FC = () => {
       const response = await axios.post('/api/auth/register', data);
       console.log('User registered successfully', response.data);
       // Optionally, redirect to sign-in page after successful sign-up
-      router.push('/pages/auth/signin');
+      router.push('/signin');
     } catch (error) {
       console.error('Error during signup:', error);
     }
@@ -126,7 +126,7 @@ const SignUpForm: React.FC = () => {
             {/* Already have an account? Sign in */}
             <Typography variant="body2" align="center" className="mt-4">
               Already have an account?
-              <Link href="/pages/auth/signin" passHref>
+              <Link href="/signin" passHref>
                 <Typography component="a" color="primary" style={{ cursor: 'pointer' }}>
                   Sign in
                 </Typography>

@@ -8,6 +8,7 @@ import JobCard from '@/app/components/createjob/JobCard';
 import { useUser } from '@/context/UserContext';
 
 export default function JobPostForm() {
+   const { user, setUser } = useUser();
   const [jobs, setJobs] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -36,6 +37,9 @@ export default function JobPostForm() {
     if (response.ok) {
       fetchJobs();
       setIsFormOpen(false);
+      alert('Job created successfully!');
+    } else {
+      alert('Failed to create job.');
     }
   };
 
@@ -49,6 +53,9 @@ export default function JobPostForm() {
       fetchJobs();
       setIsFormOpen(false);
       setSelectedJob(null);
+      alert('Job updated successfully!');
+    } else {
+      alert('Failed to update job.');
     }
   };
 
@@ -60,6 +67,9 @@ export default function JobPostForm() {
     });
     if (response.ok) {
       fetchJobs();
+      alert('Job deleted successfully!');
+    } else {
+      alert('Failed to delete job.');
     }
   };
 

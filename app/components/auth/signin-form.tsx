@@ -20,7 +20,7 @@ export function SignInForm(): React.JSX.Element {
   const router = useRouter();
 
   const handleRegisterClick = () => {
-    router.push('/pages/auth/signup');
+    router.push('/signup');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

@@ -47,28 +47,28 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       category: 'Account'
     },
     { 
-      text: 'Create Job', 
-      icon: <AddCircleIcon />, 
-      path: '/dashboard/create-job',
-      category: 'Job Management'
-    },
-    { 
-      text: 'Total Jobs', 
+      text: 'Jobs', 
       icon: <FormatListBulletedIcon />, 
       path: '/dashboard/total-job',
       category: 'Job Management'
     },
     { 
-      text: 'Applied Jobs', 
-      icon: <WorkIcon />, 
-      path: '/dashboard/job-Requests',
-      category: 'Applications'
+      text: 'Create', 
+      icon: <AddCircleIcon />, 
+      path: '/dashboard/create-job',
+      category: 'Admin Pannel'
     },
     { 
-      text: 'Job Requests', 
+      text: 'Applied', 
+      icon: <WorkIcon />, 
+      path: '/dashboard/job-Requests',
+      category: 'Job Management'
+    },
+    { 
+      text: 'Requests', 
       icon: <AssignmentTurnedInIcon />, 
       path: '/dashboard/job-request',
-      category: 'Applications'
+      category: 'Admin Pannel'
     },
   ];
 

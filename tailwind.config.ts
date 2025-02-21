@@ -13,6 +13,7 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         lightblue:"#0B9AF7",
+        darkblue : "#1967A9"
       },
     },
   },

@@ -2,14 +2,14 @@
 'use client'
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';  // Import useRouter
+import { useRouter } from 'next/navigation';
 import BuildWebsite from '@/public/assests/Landingpage-hero.png';
 
 export default function Hero() {
-    const router = useRouter();  // Initialize the router
+    const router = useRouter(); 
 
     const handleGetStarted = () => {
-        router.push('/signup');  // Navigate to the signup page
+        router.push('/signup'); 
     };
 
     return (
@@ -21,7 +21,7 @@ export default function Hero() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="w-full lg:w-1/2 lg:pr-12 mt-8 lg:mt-0"
             >
-                <h2 className="text-2xl sm:text-6xl text-lightblue font-bold leading-tight mb-5">
+                <h2 className="text-2xl sm:text-6xl text-darkblue font-bold leading-tight mb-5">
                     Where solution
                     <span className=""> meets Excellence</span>
                 </h2>

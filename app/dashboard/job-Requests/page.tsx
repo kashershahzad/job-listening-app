@@ -18,7 +18,7 @@ const AppliedJobsPage = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-6 ">
+    <div className="min-h-screen px-6 ">
       <Container>
         {/* Added Heading */}
         <div className="text-center mb-12">
@@ -43,7 +43,7 @@ const AppliedJobsPage = () => {
             </Typography>
           </div>
         ) : (
-          <Grid container spacing={6} justifyContent="center">
+          <Grid container spacing={6}>
             {user.appliedJobs.map((job) => (
               <Grid item xs={12} sm={6} md={4} key={job.id}>
                 <motion.div

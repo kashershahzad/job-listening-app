@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { v2 as cloudinary } from "cloudinary";
-import multer from "multer";
-import { Readable } from "stream";
 
 const prisma = new PrismaClient();
 
@@ -12,72 +10,38 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-    files: 1,
-  },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("application/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only document files are allowed"));
-    }
-  },
-});
-
-async function runMiddleware(req: any, res: any, fn: Function) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
-      if (result instanceof Error) {
-        console.error("Middleware error:", result);
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
-
 export const config = {
-  runtime: "nodejs",
   api: {
     bodyParser: false,
   },
 };
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Parse the multipart form data
+    const formData = await request.formData();
+    
+    // Get all the form fields
+    const job_id = formData.get('job_id') as string;
+    const user_id = formData.get('user_id') as string;
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const phoneNumber = formData.get('phoneNumber') as string;
+    const qualification = formData.get('qualification') as string;
+    const resumeFile = formData.get('resume') as File;
 
-    const arrayBuffer = await req.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const stream = Readable.from(buffer);
-
-    const reqAny: any = stream;
-    reqAny.headers = Object.fromEntries(req.headers);
-    reqAny.method = req.method;
-    reqAny.body = {};
-
-    await runMiddleware(reqAny, {}, upload.single("resume"));
-
-    console.log("Request Body:", reqAny.body);
-    console.log("Request File:", reqAny.file);
-
-    const { job_id, user_id, name, email, phoneNumber, qualification } = reqAny.body;
-    const resumeFile = reqAny.file;
-
-    if (!job_id || !user_id || !name || !email || !phoneNumber || !qualification || !resumeFile || !resumeFile.buffer) {
+    if (!job_id || !user_id || !name || !email || !phoneNumber || !qualification || !resumeFile) {
       return NextResponse.json(
-        { error: "Job ID, User ID, Name, Email, Phone Number, Qualification, and Resume are required" },
+        { error: "All fields including resume are required" },
         { status: 400 }
       );
     }
 
-    const jobId = parseInt(job_id, 10);
-    const userId = parseInt(user_id, 10);
+    // Convert File to Buffer for Cloudinary
+    const bytes = await resumeFile.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
+    // Upload to Cloudinary
     const cloudinaryResponse: any = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
@@ -91,19 +55,20 @@ export async function POST(req: Request) {
             } else {
               resolve(result);
             }
-          } 
+          }
         )
-        .end(resumeFile.buffer);
+        .end(buffer);
     });
 
     if (!cloudinaryResponse || !cloudinaryResponse.secure_url) {
       throw new Error("Cloudinary upload failed");
     }
 
+    // Create application in database
     const application = await prisma.application.create({
       data: {
-        jobId,
-        userId,
+        jobId: parseInt(job_id, 10),
+        userId: parseInt(user_id, 10),
         name,
         email,
         phoneNumber,
@@ -113,14 +78,10 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log(application);
-
     return NextResponse.json({ success: true, application }, { status: 201 });
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Application submission failed";
-    console.error("Application error:", errorMessage);
-
+    console.error("Application error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Application submission failed";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

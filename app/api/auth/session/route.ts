@@ -3,6 +3,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, UserSession } from "@/lib/session";
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {

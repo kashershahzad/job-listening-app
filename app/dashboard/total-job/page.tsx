@@ -28,11 +28,7 @@ import {
   FilterList as FilterIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-
-// Define types
-interface User {
-  id: string;
-}
+import { useUser } from '@/context/UserContext';
 
 interface Job {
   id: number;
@@ -43,14 +39,6 @@ interface Job {
   salary: number;
 }
 
-// Mock useUser hook - replace with your actual implementation
-const useUser = (): { user: User } => {
-  return {
-    user: { id: '1' },
-  };
-};
-
-// Modal style
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -81,9 +69,8 @@ const JobList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [categories, setCategories] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // New state for loading
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Fetch jobs on component mount
   useEffect(() => {
     fetch('/api/jobs')
       .then((response) => {
@@ -93,7 +80,6 @@ const JobList: React.FC = () => {
       .then((data: { jobs: Job[] }) => {
         setJobs(data.jobs);
         setLoading(false);
-        // Extract unique categories and locations
         const uniqueCategories = Array.from(new Set(data.jobs.map((job) => job.category)));
         const uniqueLocations = Array.from(new Set(data.jobs.map((job) => job.location)));
         setCategories(uniqueCategories);
@@ -106,21 +92,24 @@ const JobList: React.FC = () => {
       });
   }, []);
 
-  // Handle file input change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
       setResumeFile(event.target.files[0]);
     }
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
-    if (!resumeFile || !selectedJob || !user?.id || !name || !email || !phoneNumber || !qualification) {
-      alert('Please fill out all fields and ensure you are logged in.');
+    if (!user) {
+      alert('Please log in to apply for jobs');
       return;
     }
 
-    setIsSubmitting(true); // Start loading
+    if (!resumeFile || !selectedJob || !name || !email || !phoneNumber || !qualification) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    setIsSubmitting(true);
 
     const formData = new FormData();
     formData.append('resume', resumeFile);
@@ -131,36 +120,32 @@ const JobList: React.FC = () => {
     formData.append('phoneNumber', phoneNumber);
     formData.append('qualification', qualification);
 
-    console.log('FormData:', formData); // Log FormData
-
     try {
       const response = await fetch('/api/application', {
         method: 'POST',
         body: formData,
       });
 
-      console.log('Response:', response); 
-
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error data:', errorData); 
-        throw new Error('Failed to submit application');
+        throw new Error(errorData.message || 'Failed to submit application');
       }
-
-      const responseData = await response.json();
-      console.log('Response data:', responseData);
 
       alert('Application submitted successfully!');
       setIsApplyOpen(false);
+      setName('');
+      setEmail('');
+      setPhoneNumber('');
+      setQualification('');
+      setResumeFile(null);
     } catch (error) {
       console.error('Error submitting application:', error);
-      alert('Failed to submit application');
+      alert(error instanceof Error ? error.message : 'Failed to submit application');
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
-  // Filter jobs based on selected category and location
   const filteredJobs = jobs.filter((job) => {
     return (
       (!selectedCategory || job.category === selectedCategory) &&
@@ -168,7 +153,6 @@ const JobList: React.FC = () => {
     );
   });
 
-  // Loading state
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -177,7 +161,6 @@ const JobList: React.FC = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="64px">
@@ -352,7 +335,6 @@ const JobList: React.FC = () => {
           )}
         </Grid>
 
-        {/* Job Details Modal */}
         <Modal open={isDetailsOpen} onClose={() => setIsDetailsOpen(false)}>
           <Box sx={modalStyle}>
             <Typography variant="h4" component="h2" gutterBottom>
@@ -390,7 +372,6 @@ const JobList: React.FC = () => {
           </Box>
         </Modal>
 
-        {/* Apply Modal */}
         <Modal open={isApplyOpen} onClose={() => setIsApplyOpen(false)}>
           <Box sx={modalStyle}>
             <Typography variant="h4" component="h2" gutterBottom>

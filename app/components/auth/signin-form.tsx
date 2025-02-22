@@ -11,8 +11,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import InputAdornment from '@mui/material/InputAdornment'; // Import InputAdornment
+import { useUser } from "@/context/UserContext";
 
 export function SignInForm(): React.JSX.Element {
+  const { refetchUser } = useUser();
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>(''); // Changed from username to email
   const [password, setPassword] = React.useState<string>('');
@@ -37,7 +39,11 @@ export function SignInForm(): React.JSX.Element {
 
       if (response.ok) {
         router.push('/dashboard');
-      } else {
+        setTimeout(() => {
+          refetchUser();
+        }, 500); 
+      }
+       else {
         const data = await response.json();
         setError(data.message || 'Login failed');
       }

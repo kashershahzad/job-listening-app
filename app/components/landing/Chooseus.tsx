@@ -54,7 +54,6 @@ export default function Advantage() {
                     <p className="font-light text-theme-light-Blue text-sm">
                       {item.description}
                     </p>
-
                   </Box>
                 </Box>
               ))}

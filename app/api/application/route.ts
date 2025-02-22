@@ -1,3 +1,5 @@
+// app/api/application/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { v2 as cloudinary } from "cloudinary";
@@ -10,18 +12,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Remove the config export as it's not needed in App Router
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
+// Make sure to explicitly export the HTTP methods you want to support
 export async function POST(request: NextRequest) {
+  if (request.method !== 'POST') {
+    return NextResponse.json(
+      { error: "Method not allowed" },
+      { status: 405 }
+    );
+  }
+
   try {
-    // Parse the multipart form data
     const formData = await request.formData();
     
-    // Get all the form fields
     const job_id = formData.get('job_id') as string;
     const user_id = formData.get('user_id') as string;
     const name = formData.get('name') as string;
@@ -29,6 +38,17 @@ export async function POST(request: NextRequest) {
     const phoneNumber = formData.get('phoneNumber') as string;
     const qualification = formData.get('qualification') as string;
     const resumeFile = formData.get('resume') as File;
+
+    // Log the received data for debugging
+    console.log('Received form data:', {
+      job_id,
+      user_id,
+      name,
+      email,
+      phoneNumber,
+      qualification,
+      resumeFile: resumeFile ? 'File present' : 'No file'
+    });
 
     if (!job_id || !user_id || !name || !email || !phoneNumber || !qualification || !resumeFile) {
       return NextResponse.json(
@@ -41,23 +61,24 @@ export async function POST(request: NextRequest) {
     const bytes = await resumeFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Cloudinary
+    // Upload to Cloudinary with error handling
     const cloudinaryResponse: any = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: "auto",
-            folder: "job-portal/resumes",
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "job-portal/resumes",
+        },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            reject(error);
+          } else {
+            resolve(result);
           }
-        )
-        .end(buffer);
+        }
+      );
+
+      uploadStream.end(buffer);
     });
 
     if (!cloudinaryResponse || !cloudinaryResponse.secure_url) {
@@ -78,15 +99,28 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, application }, { status: 201 });
+    return NextResponse.json(
+      { success: true, application }, 
+      { status: 201 }
+    );
   } catch (error: unknown) {
     console.error("Application error:", error);
     const errorMessage = error instanceof Error ? error.message : "Application submission failed";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: errorMessage }, 
+      { status: 500 }
+    );
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (request.method !== 'GET') {
+    return NextResponse.json(
+      { error: "Method not allowed" },
+      { status: 405 }
+    );
+  }
+
   try {
     const applications = await prisma.application.findMany({
       include: {
@@ -96,8 +130,7 @@ export async function GET() {
     });
     return NextResponse.json({ success: true, applications });
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch applications";
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch applications";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

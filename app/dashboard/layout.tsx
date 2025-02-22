@@ -8,7 +8,8 @@ import {
   IconButton, 
   Typography,
   Box,
-  useTheme
+  useTheme,
+  Skeleton
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,6 +35,7 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
   const { user } = useUser();
   const theme = useTheme();
 
@@ -70,12 +72,64 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     },
   ];
 
+  // Simulate loading effect
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // Adjust timing as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Loading skeleton component
+  const MenuSkeleton = () => (
+    <>
+      {[1, 2, 3].map((category) => (
+        <Box key={category} sx={{ mb: 3 }}>
+          <Skeleton 
+            variant="text" 
+            width={100} 
+            sx={{ 
+              bgcolor: 'rgba(255, 255, 255, 0.1)',
+              mb: 1
+            }} 
+          />
+          
+          {[1, 2, 3].map((item) => (
+            <Box
+              key={item}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                px: 2,
+                py: 1.5,
+                my: 1,
+              }}
+            >
+              <Skeleton 
+                variant="circular" 
+                width={24} 
+                height={24} 
+                sx={{ bgcolor: 'rgba(255, 255, 255, 0.1)' }} 
+              />
+              <Skeleton 
+                variant="text" 
+                width={150} 
+                sx={{ bgcolor: 'rgba(255, 255, 255, 0.1)' }} 
+              />
+            </Box>
+          ))}
+        </Box>
+      ))}
+    </>
+  );
+
   // First filter items based on user role
   const filteredMenuItems = menuItems.filter((item) => {
     if (user?.role === 'admin') {
       return true;
     } else if (user?.role === 'user') {
-      // Filter out items from Admin Pannel category
       return item.category !== 'Admin Pannel';
     }
     return false;
@@ -101,60 +155,64 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       flexDirection: 'column'
     }}>
       <Box sx={{ p: 2, flexGrow: 1 }}>
-        {Object.entries(groupedMenuItems).map(([category, items]) => (
-          <Box key={category} sx={{ mb: 3 }}>
-            <Typography 
-              variant="overline" 
-              sx={{ 
-                color: 'grey.300',
-                px: 2,
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                letterSpacing: '0.1em'
-              }}
-            >
-              {category}
-            </Typography>
-            
-            {items.map((item) => (
-              <Link key={item.text} href={item.path} passHref>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    px: 2,
-                    py: 1.5,
-                    my: 1,
-                    borderRadius: 1.5,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    color: pathname === item.path ? 'white' : 'grey.300',
-                    bgcolor: pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                    '&:hover': {
-                      bgcolor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateX(4px)'
-                    }
-                  }}
-                >
-                  <Box sx={{ 
-                    color: pathname === item.path ? 'white' : 'grey.300',
-                    transition: 'all 0.2s'
-                  }}>
-                    {item.icon}
+        {loading ? (
+          <MenuSkeleton />
+        ) : (
+          Object.entries(groupedMenuItems).map(([category, items]) => (
+            <Box key={category} sx={{ mb: 3 }}>
+              <Typography 
+                variant="overline" 
+                sx={{ 
+                  color: 'grey.300',
+                  px: 2,
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em'
+                }}
+              >
+                {category}
+              </Typography>
+              
+              {items.map((item) => (
+                <Link key={item.text} href={item.path} passHref>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      px: 2,
+                      py: 1.5,
+                      my: 1,
+                      borderRadius: 1.5,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      color: pathname === item.path ? 'white' : 'grey.300',
+                      bgcolor: pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                      '&:hover': {
+                        bgcolor: 'rgba(255, 255, 255, 0.1)',
+                        transform: 'translateX(4px)'
+                      }
+                    }}
+                  >
+                    <Box sx={{ 
+                      color: pathname === item.path ? 'white' : 'grey.300',
+                      transition: 'all 0.2s'
+                    }}>
+                      {item.icon}
+                    </Box>
+                    <Typography sx={{ 
+                      fontWeight: pathname === item.path ? 600 : 400,
+                      fontSize: '0.95rem',
+                      color: pathname === item.path ? 'white' : 'grey.300'
+                    }}>
+                      {item.text}
+                    </Typography>
                   </Box>
-                  <Typography sx={{ 
-                    fontWeight: pathname === item.path ? 600 : 400,
-                    fontSize: '0.95rem',
-                    color: pathname === item.path ? 'white' : 'grey.300'
-                  }}>
-                    {item.text}
-                  </Typography>
-                </Box>
-              </Link>
-            ))}
-          </Box>
-        ))}
+                </Link>
+              ))}
+            </Box>
+          ))
+        )}
       </Box>
     </Box>
   );

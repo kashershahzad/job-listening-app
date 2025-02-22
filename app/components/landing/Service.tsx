@@ -37,13 +37,12 @@ const services = [
 export default function Service() {
   return (
     <Container maxWidth="lg" className="pt-20 pb-28">
-      <Typography variant="h2" align="center" className="text-5xl font-bold text-darkblue mb-4">
+      <h2 className="text-5xl font-bold text-darkblue mb-4 text-center">
         WE Provides
-      </Typography>
-      <Typography variant="subtitle1" align="center" className="font-light text-lg mb-12">
+      </h2>
+      <p className="text-lg font-light mb-12 text-center">
         We are ready to scale up your business with our great service.
-      </Typography>
-
+      </p>
       <Grid container spacing={6} className="px-10">
         {services.map((service, index) => (
           <Grid item xs={12} sm={4} key={index}>

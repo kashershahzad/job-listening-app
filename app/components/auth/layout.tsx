@@ -25,7 +25,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
             <Box
               component="img"
               alt="Widgets"
-              src="\assests/logo.jpg"
+              src="assests/logo.png"
               sx={{ height: 'auto', width: '100%', maxWidth: '100px' }}
             />
           </Box>

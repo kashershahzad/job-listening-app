@@ -49,7 +49,7 @@ const SignUpForm: React.FC = () => {
           <Box
             component="img"
             alt="Widgets"
-            src="\assests/logo.jpg"
+            src="assests/logo.png"
             sx={{ height: 'auto', width: '100%', maxWidth: '100px' }}
           />
         </Grid>

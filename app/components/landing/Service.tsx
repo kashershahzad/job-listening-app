@@ -36,7 +36,7 @@ const services = [
 
 export default function Service() {
   return (
-    <Container maxWidth="lg" className=" pb-28">
+    <Container maxWidth="lg" className="pb-28">
       <h2 className="text-5xl font-bold text-darkblue mb-4 text-center">
         WE Provides
       </h2>

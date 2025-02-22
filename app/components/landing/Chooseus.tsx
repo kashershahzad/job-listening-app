@@ -16,7 +16,7 @@ const advantages = [
   ],
   [
     {
-      imageUrl:'assests/Communicative.png',
+      imageUrl: 'assests/Communicative.png',
       title: 'Personalized Support',
       description: 'Our team provides personalized guidance and support',
     },
@@ -32,13 +32,12 @@ export default function Advantage() {
   return (
     <Box className="bg-gray-50 py-20 mb-24 sm:mb-18 xl:mb-16">
       <Container>
-        <Typography variant="h2" className="text-5xl text-darkblue text-center font-bold">
+        <h2 className="text-5xl text-darkblue text-center font-bold">
           Why Choose Us
-        </Typography>
-        <Typography variant="body1" className="font-light text-lg text-theme-light-Blue text-center mb-12 sm:mb-5 xl:mb-0">
+        </h2>
+        <p className="font-light text-lg text-theme-light-Blue text-center mb-12 sm:mb-5 xl:mb-0">
           Why you should choose us to handle your project.
-        </Typography>
-
+        </p>
         <Grid container spacing={4}>
           {advantages.map((column, colIndex) => (
             <Grid item xs={12} sm={6} key={colIndex}>
@@ -49,12 +48,13 @@ export default function Advantage() {
                 >
                   <img src={item.imageUrl} alt={item.title} className="w-1/3" />
                   <Box className="flex-col pl-5">
-                    <Typography variant="h3" className="text-darkblue text-2xl font-bold">
+                    <h3 className="text-darkblue text-2xl font-bold">
                       {item.title}
-                    </Typography>
-                    <Typography variant="body2" className="font-light text-theme-light-Blue text-sm">
+                    </h3>
+                    <p className="font-light text-theme-light-Blue text-sm">
                       {item.description}
-                    </Typography>
+                    </p>
+
                   </Box>
                 </Box>
               ))}

@@ -14,12 +14,12 @@ export default function Navbar() {
       </div>
 
       {/* Button with Navigation */}
-      <button 
+      {/* <button 
         onClick={() => router.push('/signup')}
-        className="px-10 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-lg hover:from-indigo-600 hover:to-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
+        className="flex items-center px-10 py-4 text-white text-xl bg-gradient-to-r from-lightblue to-darkblue rounded-lg shadow-lg hover:from-darkblue hover:to-lightblue transition duration-300 ease-in-out transform hover:scale-105"
       >
         Get Started
-      </button>
+      </button> */}
     </nav>
   );
 }

@@ -26,11 +26,11 @@ export default function Hero() {
                     <span className=""> meets Excellence</span>
                 </h2>
                 <p className="font-light text-xl text-theme-light-Blue leading-relaxed mb-16">
-                    Welcome to Career! We ensure to make your journey interesting and memorable.
+                    Welcome to JobConnect! We ensure to make your journey interesting and memorable.
                 </p>
                 <button
                     onClick={handleGetStarted}  // Add the onClick handler
-                    className="flex items-center px-10 py-4 text-white text-xl bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-lg hover:from-indigo-600 hover:to-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
+                    className="flex items-center px-10 py-4 text-white text-xl bg-gradient-to-r from-lightblue to-darkblue rounded-lg shadow-lg hover:from-darkblue hover:to-lightblue transition duration-300 ease-in-out transform hover:scale-105"
                 >
                     Get Started
                     <svg

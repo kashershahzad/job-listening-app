@@ -32,7 +32,7 @@ export default function Advantage() {
   return (
     <Box className="bg-gray-50 py-20 mb-24 sm:mb-18 xl:mb-16">
       <Container>
-        <h2 className="text-5xl text-darkblue text-center font-bold">
+        <h2 className="lg:text-5xl text-darkblue text-center font-bold text-2xl">
           Why Choose Us
         </h2>
         <p className="font-light text-lg text-theme-light-Blue text-center mb-12 sm:mb-5 xl:mb-0">

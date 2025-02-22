@@ -37,7 +37,7 @@ const services = [
 export default function Service() {
   return (
     <Container maxWidth="lg" className="pb-28">
-      <h2 className="text-5xl font-bold text-darkblue mb-4 text-center">
+      <h2 className="lg:text-5xl font-bold text-darkblue mb-4 text-center text-2xl">
         WE Provides
       </h2>
       <p className="text-lg font-light mb-12 text-center">

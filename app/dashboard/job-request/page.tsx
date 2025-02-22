@@ -79,7 +79,7 @@ const ApplicationList: React.FC = () => {
       setError(null);
       const response = await fetch('/api/application');
       const data: ApiResponse = await response.json();
-      
+
       if (data.success) {
         setApplications(data.applications);
       } else {
@@ -166,29 +166,63 @@ const ApplicationList: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>      
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid container spacing={3}>
         {applications.map((application) => (
           <Grid item xs={12} key={application.id}>
             <Card elevation={3}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                  <Typography variant="h6">
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={2}
+                  flexWrap="wrap" // Wrap for smaller screens
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } // Responsive font sizes
+                    }}
+                  >
                     {application.name}
                   </Typography>
-                  <Typography variant="subtitle1" color="text.secondary">
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    sx={{
+                      fontSize: { xs: '0.75rem', sm: '1rem' }, // Smaller font on small screens
+                      textAlign: { xs: 'left', sm: 'right' } // Align left on extra small screens
+                    }}
+                  >
                     Application for: {application.job.title}
                   </Typography>
                 </Box>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography variant="body1">Status:</Typography>
-                  <Chip 
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  flexWrap="wrap" // Wrap status and chip if needed
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }}
+                  >
+                    Status:
+                  </Typography>
+                  <Chip
                     label={application.status}
                     color={getStatusColor(application.status)}
                     size="small"
+                    sx={{
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}
                   />
                 </Box>
               </CardContent>
+
               <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
                 <Button
                   variant="outlined"
@@ -221,8 +255,8 @@ const ApplicationList: React.FC = () => {
         ))}
       </Grid>
 
-      <Dialog 
-        open={isDetailsOpen} 
+      <Dialog
+        open={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
         maxWidth="md"
         fullWidth
@@ -266,7 +300,7 @@ const ApplicationList: React.FC = () => {
                     <Typography variant="h6" gutterBottom>
                       Resume
                     </Typography>
-                    <Link 
+                    <Link
                       href={selectedApp.resume}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -278,7 +312,7 @@ const ApplicationList: React.FC = () => {
                 <Grid item xs={12}>
                   <Box display="flex" alignItems="center" gap={1}>
                     <Typography><strong>Application Status:</strong></Typography>
-                    <Chip 
+                    <Chip
                       label={selectedApp.status}
                       color={getStatusColor(selectedApp.status)}
                     />

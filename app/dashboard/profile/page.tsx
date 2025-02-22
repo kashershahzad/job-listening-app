@@ -4,7 +4,6 @@ import React from 'react';
 import { useUser } from '@/context/UserContext';
 import { Typography, Paper, Grid, Button, Divider } from '@mui/material';
 import { ExitToApp } from '@mui/icons-material';
-import Appliedjobs from "@/app/dashboard/job-Requests/page"
 
 const ProfilePage: React.FC = () => {
   const { user, setUser } = useUser();
@@ -34,11 +33,13 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <>
     <div
       style={{
         minHeight: '50vh',
         display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '16px',
       }}
     >
       <Paper
@@ -47,9 +48,10 @@ const ProfilePage: React.FC = () => {
           maxWidth: '900px',
           borderRadius: '16px',
           overflow: 'hidden',
-          backgroundColor: '#fff', // White card background
-          boxShadow: '0 8px 32px rgba(0, 123, 255, 0.2)', // Blue shadow
+          backgroundColor: '#fff',
+          boxShadow: '0 8px 32px rgba(0, 123, 255, 0.2)',
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' }, // Column on mobile, row on larger screens
         }}
       >
         {/* Left Side: Profile Overview */}
@@ -61,8 +63,9 @@ const ProfilePage: React.FC = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(to bottom, #007bff, #0056b3)', // Blue gradient
+            background: 'linear-gradient(to bottom, #007bff, #0056b3)',
             color: '#fff',
+            flex: 1,
           }}
         >
           <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
@@ -88,15 +91,16 @@ const ProfilePage: React.FC = () => {
         </Grid>
 
         {/* Divider */}
-        <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#90caf9' }} />
+        <Divider orientation="horizontal" flexItem sx={{ backgroundColor: '#90caf9', display: { xs: 'block', sm: 'none' } }} />
+        <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#90caf9', display: { xs: 'none', sm: 'block' } }} />
 
         {/* Right Side: Profile Details */}
-        <Grid container sx={{ padding: '32px', background: '#fff' }}>
+        <Grid container sx={{ padding: '32px', background: '#fff', flex: 2 }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 4, color: '#007bff' }}>
             Profile Details
           </Typography>
           <Grid container spacing={3}>
-          <Grid item xs={12}>
+            <Grid item xs={12}>
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#1565c0' }}>
                 User ID
               </Typography>
@@ -124,8 +128,6 @@ const ProfilePage: React.FC = () => {
         </Grid>
       </Paper>
     </div>
-    <Appliedjobs />
-    </>
   );
 };
 

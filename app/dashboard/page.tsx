@@ -13,7 +13,7 @@ const DashboardPage = () => {
         <div className="flex items-center justify-center mb-6 bg-white">
           <Image src={logo} alt="JobConnect Logo" width={100} height={100} className="" />
         </div>
-        <h1 className="text-4xl font-extrabold text-gray-700 text-center mb-4">
+        <h1 className="lg:text-4xl font-extrabold text-gray-700 text-center mb-4 text-lg">
           Good Evening Sir, <span className="text-darkblue">{user?.name}</span>
         </h1>
         <p className="text-lg text-gray-600 text-center mb-6">
@@ -21,11 +21,11 @@ const DashboardPage = () => {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-6 bg-blue-100 rounded-xl shadow-md hover:shadow-xl transition-all border border-lightblue">
-            <h2 className="text-2xl font-bold text-darkblue">Find New Jobs</h2>
+            <h2 className="lg:text-2xl font-bold text-darkblue text-lg">Find New Jobs</h2>
             <p className="text-gray-600 mt-2">Browse the latest job postings tailored to your skills and preferences.</p>
           </div>
           <div className="p-6 rounded-xl shadow-md hover:shadow-xl transition-all border border-lightblue">
-            <h2 className="text-2xl font-bold text-darkblue">Manage Applications</h2>
+            <h2 className="lg:text-2xl font-bold text-darkblue text-lg">Manage Applications</h2>
             <p className="text-gray-600 mt-2">Track the status of your job applications and upcoming interviews.</p>
           </div>
         </div>

@@ -134,13 +134,9 @@ const JobList: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
-          <Typography variant="h2" sx={{ 
-            color: 'primary.dark',
-            fontWeight: 700,
-            mb: 2
-          }}>
-            Featured Job Positions
-          </Typography>
+          <h2 className="lg:text-5xl font-bold text-darkblue mb-4 text-center text-2xl">
+          Featured Job Positions
+      </h2>
           <Typography variant="h6" sx={{ color: 'black' }}>
             Discover your next career opportunity
           </Typography>

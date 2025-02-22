@@ -46,20 +46,39 @@ export default function Service() {
       <Grid container spacing={6} className="px-10">
         {services.map((service, index) => (
           <Grid item xs={12} sm={4} key={index}>
-            <Card className="rounded-2xl shadow-2xl border border-lightblue transform transition duration-500 hover:scale-105 ">
+            <Card
+              sx={{
+                borderRadius: '1rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                border: '1px solid #87CEFA',
+                transition: 'transform 0.5s ease',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                },
+              }}
+            >
               <CardMedia
                 component="img"
                 alt={service.title}
                 height="200"
                 image={service.imageUrl}
-                className="rounded-t-2xl"
+                sx={{ borderTopLeftRadius: '1rem', borderTopRightRadius: '1rem' }}
               />
-              <CardContent className="text-center">
-                <Typography variant="h5" className="text-darkblue py-7 text-xl font-bold">
+              <CardContent sx={{ textAlign: 'center' }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: '#1E3A8A',
+                    paddingY: '1.75rem',
+                    fontSize: '1.25rem',
+                    fontWeight: 'bold',
+                  }}
+                >
                   {service.title}
                 </Typography>
               </CardContent>
             </Card>
+
           </Grid>
         ))}
       </Grid>

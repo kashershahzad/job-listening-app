@@ -77,7 +77,7 @@ const ApplicationList: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:3000/api/application');
+      const response = await fetch('/api/application');
       const data: ApiResponse = await response.json();
       
       if (data.success) {
@@ -93,45 +93,45 @@ const ApplicationList: React.FC = () => {
     }
   };
 
-  const handleAccept = async (id: number): Promise<void> => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/application/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'accepted' }),
-      });
+  // const handleAccept = async (id: number): Promise<void> => {
+  //   try {
+  //     const response = await fetch(`/api/application/${id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ status: 'accepted' }),
+  //     });
 
-      if (response.ok) {
-        await fetchApplications();
-      } else {
-        throw new Error('Failed to accept application');
-      }
-    } catch (error) {
-      console.error('Error accepting application:', error);
-    }
-  };
+  //     if (response.ok) {
+  //       await fetchApplications();
+  //     } else {
+  //       throw new Error('Failed to accept application');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error accepting application:', error);
+  //   }
+  // };
 
-  const handleDecline = async (id: number): Promise<void> => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/application/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'declined' }),
-      });
+  // const handleDecline = async (id: number): Promise<void> => {
+  //   try {
+  //     const response = await fetch(`/api/application/${id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ status: 'declined' }),
+  //     });
 
-      if (response.ok) {
-        await fetchApplications();
-      } else {
-        throw new Error('Failed to decline application');
-      }
-    } catch (error) {
-      console.error('Error declining application:', error);
-    }
-  };
+  //     if (response.ok) {
+  //       await fetchApplications();
+  //     } else {
+  //       throw new Error('Failed to decline application');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error declining application:', error);
+  //   }
+  // };
 
   const handleViewDetails = (application: Application): void => {
     setSelectedApp(application);

@@ -139,16 +139,16 @@ const JobList: React.FC = () => {
         body: formData,
       });
 
-      console.log('Response:', response); // Log response
+      console.log('Response:', response); 
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error data:', errorData); // Log error data
+        console.error('Error data:', errorData); 
         throw new Error('Failed to submit application');
       }
 
       const responseData = await response.json();
-      console.log('Response data:', responseData); // Log response data
+      console.log('Response data:', responseData);
 
       alert('Application submitted successfully!');
       setIsApplyOpen(false);
@@ -156,7 +156,7 @@ const JobList: React.FC = () => {
       console.error('Error submitting application:', error);
       alert('Failed to submit application');
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false); 
     }
   };
 

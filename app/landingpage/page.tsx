@@ -5,6 +5,7 @@ import Service from "@/app/components/landing/Service"
 import Choose from "@/app/components/landing/Chooseus"
 import Jobs from "@/app/components/landing/Jobs"
 import GetStartes from "@/app/components/landing/GetStrated"
+import Footer from "@/app/components/landing/Footer"
 
 const page = () => {
     return (
@@ -15,6 +16,7 @@ const page = () => {
             <Jobs />
             <Choose />
             <GetStartes />
+            <Footer />
         </div>
     )
 }

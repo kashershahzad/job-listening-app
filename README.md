@@ -63,6 +63,12 @@ Cloudinary
 Zod 
 
 
+# Here is the Live Link https:
+https://jobconnect-app.vercel.app/
+
+# Admin Login
+test@gmail.com
+test1234
 
 
 

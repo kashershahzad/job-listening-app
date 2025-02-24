@@ -1,37 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+## Full Stack Job Listing App
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Job Listing App using Next.js for both frontend & backend with MySQL & Prisma ORM.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This app had a landing page then a signin and signup page
+If you already signin before then you direclty goes to then app
+If not then first you have to register and sign in to get the app
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## app contain 2 section 
 
-## Learn More
+User Section
+Admin Section 
 
-To learn more about Next.js, take a look at the following resources:
+## User section 
+A User can see its profile
+User can see all the jobs created by admin
+User can filter jobs according to its requirments
+User can apply for jobs with his information also upload resume.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Admin Section
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Admin section is not available for the user
+Admin have the access of all app
+Admin can create job , Delete jobs , Update jobs and see all the created jobs
+Admin can see the Job requests comming from the user
+Admin can see all details of the user who applied for jobs also its resume
 
-## Deploy on Vercel
+## Libraries
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Next.js API Routes
+TypeScript
+Tailwind CSS 
+React Query 
+React Hook Form + Zod 
+IronSession 
+Mui Icons 
+Prisma ORM 
+PostgresQL 
+jsonwebtoken
+bcrypt 
+Cloudinary
+Zod 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# job-listening-app" 
+
+
+
+
+ 

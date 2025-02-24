@@ -12,13 +12,6 @@ If you already signin before then you direclty goes to then app
 
 If not then first you have to register and sign in to get the app
 
-
-## app contain 2 section 
-
-User Section
-
-Admin Section 
-
 ## User section 
 
 A User can see its profile

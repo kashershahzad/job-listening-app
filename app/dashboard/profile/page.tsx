@@ -15,7 +15,7 @@ const ProfilePage: React.FC = () => {
         justifyContent: 'center', 
         alignItems: 'center', 
         minHeight: '50vh',
-        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+       
       }}>
         <Typography variant="h5" sx={{ color: '#3a506b', fontWeight: 500 }}>
           Loading...

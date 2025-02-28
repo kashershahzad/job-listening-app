@@ -69,7 +69,7 @@ export default function JobDetailsModal({ open, onClose, job, onDelete, onUpdate
         body: JSON.stringify({ status: 'accepted' }),
       });
       if (response.ok) {
-        fetchApplications(); // Refresh the applications list
+        fetchApplications();
       }
     } catch (error) {
       console.error('Failed to accept application:', error);
@@ -86,7 +86,7 @@ export default function JobDetailsModal({ open, onClose, job, onDelete, onUpdate
         body: JSON.stringify({ status: 'declined' }),
       });
       if (response.ok) {
-        fetchApplications(); // Refresh the applications list
+        fetchApplications();
       }
     } catch (error) {
       console.error('Failed to decline application:', error);

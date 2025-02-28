@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
 'use client'
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -14,7 +13,6 @@ export default function Hero() {
 
     return (
         <section className="hero bg-white flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 sm:px-8 lg:px-12 py-8">
-            {/* Content on the left side for larger screens, top for mobile */}
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -29,7 +27,7 @@ export default function Hero() {
                     Welcome to JobConnect! We ensure to make your journey interesting and memorable.
                 </p>
                 <button
-                    onClick={handleGetStarted}  // Add the onClick handler
+                    onClick={handleGetStarted}
                     className="flex items-center px-10 py-4 text-white text-xl bg-gradient-to-r from-lightblue to-darkblue rounded-lg shadow-lg hover:from-darkblue hover:to-lightblue transition duration-300 ease-in-out transform hover:scale-105"
                 >
                     Get Started
@@ -45,8 +43,6 @@ export default function Hero() {
                 </button>
 
             </motion.div>
-
-            {/* Image on the right side for larger screens, top for mobile */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}

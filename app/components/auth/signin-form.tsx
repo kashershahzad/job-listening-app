@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { useRouter } from 'next/navigation'; // Correct import for Next.js 13+
+import { useRouter } from 'next/navigation';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -10,13 +10,13 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import InputAdornment from '@mui/material/InputAdornment'; // Import InputAdornment
+import InputAdornment from '@mui/material/InputAdornment';
 import { useUser } from "@/context/UserContext";
 
 export function SignInForm(): React.JSX.Element {
   const { refetchUser } = useUser();
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
-  const [email, setEmail] = React.useState<string>(''); // Changed from username to email
+  const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
@@ -29,12 +29,12 @@ export function SignInForm(): React.JSX.Element {
     event.preventDefault();
 
     try {
-      const response = await fetch('/api/auth/signin', { // Ensure this endpoint matches your backend
+      const response = await fetch('/api/auth/signin', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }), // Changed from username to email
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
@@ -64,7 +64,7 @@ export function SignInForm(): React.JSX.Element {
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
           <FormControl>
-            <InputLabel>Email</InputLabel> {/* Changed from Username to Email */}
+            <InputLabel>Email</InputLabel>
             <OutlinedInput
               label="Email"
               value={email}

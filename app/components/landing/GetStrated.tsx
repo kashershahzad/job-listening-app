@@ -1,13 +1,13 @@
 'use client'
 
 import React from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter from next/router
+import { useRouter } from 'next/navigation'; 
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
 const FeatureCard = () => {
-  const router = useRouter(); // Use useRouter instead of useNavigate
+  const router = useRouter();
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 lg:mx-20">
@@ -92,7 +92,7 @@ const FeatureCard = () => {
               <Button
                 variant="contained"
                 endIcon={<ArrowForwardIcon />}
-                onClick={() => router.push('/signin')} // Use router.push to navigate
+                onClick={() => router.push('/signin')}
                 sx={{
                   background: 'linear-gradient(45deg, #4F46E5 30%, #06B6D4 90%)',
                   borderRadius: '12px',

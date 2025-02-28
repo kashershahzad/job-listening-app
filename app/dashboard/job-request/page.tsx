@@ -1,5 +1,6 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Card,
   CardContent,
@@ -14,15 +15,12 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Chip,
   Link,
   Paper,
   IconButton,
 } from '@mui/material';
 import {
   Visibility as VisibilityIcon,
-  CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
 
@@ -62,91 +60,29 @@ interface ApiResponse {
   applications: Application[];
 }
 
+const fetchApplications = async (): Promise<Application[]> => {
+  const response = await fetch('/api/application');
+  const data: ApiResponse = await response.json();
+
+  if (data.success) {
+    return data.applications;
+  } else {
+    throw new Error('Failed to fetch applications');
+  }
+};
+
 const ApplicationList: React.FC = () => {
-  const [applications, setApplications] = useState<Application[]>([]);
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch('/api/application');
-      const data: ApiResponse = await response.json();
-
-      if (data.success) {
-        setApplications(data.applications);
-      } else {
-        throw new Error('Failed to fetch applications');
-      }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred');
-      console.error('Error fetching applications:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // const handleAccept = async (id: number): Promise<void> => {
-  //   try {
-  //     const response = await fetch(`/api/application/${id}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ status: 'accepted' }),
-  //     });
-
-  //     if (response.ok) {
-  //       await fetchApplications();
-  //     } else {
-  //       throw new Error('Failed to accept application');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error accepting application:', error);
-  //   }
-  // };
-
-  // const handleDecline = async (id: number): Promise<void> => {
-  //   try {
-  //     const response = await fetch(`/api/application/${id}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ status: 'declined' }),
-  //     });
-
-  //     if (response.ok) {
-  //       await fetchApplications();
-  //     } else {
-  //       throw new Error('Failed to decline application');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error declining application:', error);
-  //   }
-  // };
+  const { data: applications, isLoading, error } = useQuery<Application[], Error>({
+    queryKey: ['applications'],
+    queryFn: fetchApplications,
+  });
 
   const handleViewDetails = (application: Application): void => {
     setSelectedApp(application);
     setIsDetailsOpen(true);
-  };
-
-  const getStatusColor = (status: string): "default" | "success" | "error" | "warning" => {
-    switch (status.toLowerCase()) {
-      case 'accepted':
-        return 'success';
-      case 'declined':
-        return 'error';
-      default:
-        return 'warning';
-    }
   };
 
   if (isLoading) {
@@ -160,7 +96,7 @@ const ApplicationList: React.FC = () => {
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">{error.message}</Alert>
       </Container>
     );
   }
@@ -168,7 +104,7 @@ const ApplicationList: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid container spacing={3}>
-        {applications.map((application) => (
+        {applications?.map((application) => (
           <Grid item xs={12} key={application.id}>
             <Card elevation={3}>
               <CardContent>
@@ -177,12 +113,12 @@ const ApplicationList: React.FC = () => {
                   justifyContent="space-between"
                   alignItems="center"
                   mb={2}
-                  flexWrap="wrap" // Wrap for smaller screens
+                  flexWrap="wrap"
                 >
                   <Typography
                     variant="h6"
                     sx={{
-                      fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } // Responsive font sizes
+                      fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } 
                     }}
                   >
                     {application.name}
@@ -191,35 +127,12 @@ const ApplicationList: React.FC = () => {
                     variant="subtitle1"
                     color="text.secondary"
                     sx={{
-                      fontSize: { xs: '0.75rem', sm: '1rem' }, // Smaller font on small screens
-                      textAlign: { xs: 'left', sm: 'right' } // Align left on extra small screens
+                      fontSize: { xs: '0.75rem', sm: '1rem' }, 
+                      textAlign: { xs: 'left', sm: 'right' } 
                     }}
                   >
                     Application for: {application.job.title}
                   </Typography>
-                </Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  flexWrap="wrap" // Wrap status and chip if needed
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontSize: { xs: '0.875rem', sm: '1rem' }
-                    }}
-                  >
-                    Status:
-                  </Typography>
-                  <Chip
-                    label={application.status}
-                    color={getStatusColor(application.status)}
-                    size="small"
-                    sx={{
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
-                    }}
-                  />
                 </Box>
               </CardContent>
 
@@ -231,24 +144,6 @@ const ApplicationList: React.FC = () => {
                 >
                   Details
                 </Button>
-                {/* <Button
-                  variant="contained"
-                  color="success"
-                  startIcon={<CheckCircleIcon />}
-                  onClick={() => handleAccept(application.id)}
-                  disabled={application.status !== 'pending'}
-                >
-                  Accept
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  startIcon={<CancelIcon />}
-                  onClick={() => handleDecline(application.id)}
-                  disabled={application.status !== 'pending'}
-                >
-                  Decline
-                </Button> */}
               </CardActions>
             </Card>
           </Grid>
@@ -308,15 +203,6 @@ const ApplicationList: React.FC = () => {
                       View Resume
                     </Link>
                   </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Typography><strong>Application Status:</strong></Typography>
-                    <Chip
-                      label={selectedApp.status}
-                      color={getStatusColor(selectedApp.status)}
-                    />
-                  </Box>
                 </Grid>
               </Grid>
             </Box>

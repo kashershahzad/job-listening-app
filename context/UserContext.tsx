@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-// Define the shape of the job object
 interface Job {
   id: number;
   title: string;
@@ -14,7 +13,6 @@ interface Job {
   status: string;
 }
 
-// Define the shape of the user object
 interface User {
   id: string;
   email: string;
@@ -23,14 +21,12 @@ interface User {
   appliedJobs: Job[];
 }
 
-// Define the context type
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   refetchUser: () => void;
 }
 
-// Create the context
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
@@ -49,10 +45,9 @@ export function UserProvider({ children }: UserProviderProps) {
       }
       return response.json();
     },
-    staleTime: 1000 * 60 * 5, // Cache session for 5 minutes
+    staleTime: 1000 * 60 * 5, 
   });
 
-  // Update state when data changes
   if (data && user !== data) {
     setUser(data);
   }
@@ -64,7 +59,6 @@ export function UserProvider({ children }: UserProviderProps) {
   );
 }
 
-// Custom hook to use the UserContext
 export function useUser() {
   const context = useContext(UserContext);
   if (context === undefined) {

@@ -72,27 +72,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        {/* Newsletter */}
-        {/* <div className="mt-12 pt-8 border-t border-white/10">
-          <div className="max-w-md mx-auto">
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Subscribe to our newsletter"
-                className="flex-1 px-4 py-2 bg-white/10 rounded-lg text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:border-white/40"
-              />
-              <button 
-                className="px-6 py-2 bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Send fontSize="small" />
-                <span>Subscribe</span>
-              </button>
-            </div>
-          </div>
-        </div> */}
-
-        {/* Copyright */}
         <div className="mt-12 text-center text-gray-400 text-sm">
           <p>© {new Date().getFullYear()} Developed By Kasher Shahzad</p>
         </div>

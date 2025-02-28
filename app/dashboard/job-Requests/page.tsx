@@ -20,20 +20,7 @@ const AppliedJobsPage = () => {
   return (
     <div className="min-h-screen px-6 ">
       <Container>
-        {/* Added Heading */}
         <div className="text-center mb-12">
-          {/* <Typography
-            variant="h3"
-            className="font-bold text-blue-600"
-            sx={{
-              fontSize: '2.5rem',
-              fontWeight: 700,
-              color: '#2563EB',
-              marginBottom: '2rem',
-            }}
-          >
-            Applied Jobs
-          </Typography> */}
         </div>
 
         {user.appliedJobs.length === 0 ? (
@@ -65,7 +52,6 @@ const AppliedJobsPage = () => {
                     }}
                   >
                     <CardContent className="flex flex-col items-center text-center p-6 flex-grow">
-                      {/* Job Icon */}
                       <Avatar
                         sx={{
                           background: '#6366F1',
@@ -76,18 +62,12 @@ const AppliedJobsPage = () => {
                       >
                         <WorkIcon sx={{ color: 'white' }} />
                       </Avatar>
-
-                      {/* Job Title */}
                       <Typography variant="h6" className="font-semibold text-gray-900">
                         {job.title}
                       </Typography>
-
-                      {/* Job Description */}
                       <Typography variant="body2" className="text-gray-600 mt-2 px-4 flex-grow">
                         {job.description}
                       </Typography>
-
-                      {/* Job Details - Chips */}
                       <div className="mt-auto flex flex-wrap gap-2 justify-center">
                         <Chip
                           icon={<LocationIcon />}

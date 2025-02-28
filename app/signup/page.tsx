@@ -9,14 +9,12 @@ import { TextField, Button, Container, Box, Typography, Grid } from '@mui/materi
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-// Zod schema for form validation
 const signupSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-// Type for form data
 type SignUpFormData = z.infer<typeof signupSchema>;
 
 const SignUpForm: React.FC = () => {
@@ -34,7 +32,6 @@ const SignUpForm: React.FC = () => {
     try {
       const response = await axios.post('/api/auth/register', data);
       console.log('User registered successfully', response.data);
-      // Optionally, redirect to sign-in page after successful sign-up
       router.push('/signin');
     } catch (error) {
       console.error('Error during signup:', error);
@@ -56,17 +53,14 @@ const SignUpForm: React.FC = () => {
       </Grid>
 
       <Grid container spacing={6}>
-        {/* Left Side: Title and Picture */}
         <Grid item xs={12} md={6}>
           <Box
             component="img"
-            src="\assests\sign-in.avif" // Replace with your image path
+            src="\assests\sign-in.avif"
             alt="Welcome Image"
             className="w-full h-auto max-w-md"
           />
         </Grid>
-
-        {/* Right Side: Sign-Up Form */}
         <Grid item xs={12} md={6} className="">
           <Box component="form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Typography variant="h4" align="center" gutterBottom className="text-lightblue font-bold">
@@ -74,7 +68,6 @@ const SignUpForm: React.FC = () => {
             </Typography>
 
             <Grid container spacing={2}>
-              {/* Name Field */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   {...register('name')}
@@ -85,8 +78,6 @@ const SignUpForm: React.FC = () => {
                   helperText={errors.name?.message}
                 />
               </Grid>
-
-              {/* Email Field */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   {...register('email')}
@@ -97,8 +88,6 @@ const SignUpForm: React.FC = () => {
                   helperText={errors.email?.message}
                 />
               </Grid>
-
-              {/* Password Field */}
               <Grid item xs={12} sm={12}>
                 <TextField
                   {...register('password')}
@@ -111,8 +100,6 @@ const SignUpForm: React.FC = () => {
                 />
               </Grid>
             </Grid>
-
-            {/* Submit Button */}
             <Button
               type="submit"
               variant="contained"
@@ -123,7 +110,6 @@ const SignUpForm: React.FC = () => {
             >
               Sign Up
             </Button>
-            {/* Already have an account? Sign in */}
             <Typography variant="body2" align="center" className="mt-4">
               Already have an account?
               <Link href="/signin" passHref>

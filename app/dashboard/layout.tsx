@@ -72,16 +72,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     },
   ];
 
-  // Simulate loading effect
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000); // Adjust timing as needed
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Loading skeleton component
   const MenuSkeleton = () => (
     <>
       {[1, 2, 3].map((category) => (
@@ -125,7 +123,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     </>
   );
 
-  // First filter items based on user role
   const filteredMenuItems = menuItems.filter((item) => {
     if (user?.role === 'admin') {
       return true;
@@ -135,7 +132,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return false;
   });
 
-  // Group menu items by category
   const groupedMenuItems = filteredMenuItems.reduce((acc, item) => {
     const category = item.category || 'Other';
     if (!acc[category]) {

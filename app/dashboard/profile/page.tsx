@@ -34,8 +34,8 @@ const ProfilePage: React.FC = () => {
       });
 
       if (response.ok) {
-        setUser(null); // Clear the user context
-        window.location.href = '/signin'; // Redirect to the login page
+        setUser(null); 
+        window.location.href = '/signin'; 
       } else {
         console.error('Failed to sign out');
       }
@@ -44,7 +44,6 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  // Get user initials for avatar
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -61,7 +60,6 @@ const ProfilePage: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         padding: '16px',
-        // background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
       }}
     >
       <Paper
@@ -72,12 +70,10 @@ const ProfilePage: React.FC = () => {
           borderRadius: '16px',
           overflow: 'hidden',
           backgroundColor: '#fff',
-          // boxShadow: '0 12px 32px rgba(0, 123, 255, 0.2)',
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
         }}
       >
-        {/* Left Side: Profile Overview */}
         <Grid
           container
           sx={{
@@ -93,7 +89,6 @@ const ProfilePage: React.FC = () => {
             overflow: 'hidden',
           }}
         >
-          {/* Decorative circle in background */}
           <Box sx={{ 
             position: 'absolute', 
             width: '300px', 
@@ -104,8 +99,6 @@ const ProfilePage: React.FC = () => {
             right: '-150px',
             zIndex: 0
           }} />
-          
-          {/* Avatar */}
           <Avatar
             sx={{
               width: 90,
@@ -129,15 +122,7 @@ const ProfilePage: React.FC = () => {
             zIndex: 1
           }}>
             {user.name}
-          </Typography>
-          
-          {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, zIndex: 1 }}>
-            <Email sx={{ fontSize: 18, mr: 1, opacity: 0.9 }} />
-            <Typography variant="body1">
-              {user.email}
-            </Typography>
-          </Box> */}
-          
+          </Typography>         
           <Button
             variant="contained"
             startIcon={<ExitToApp />}
@@ -160,12 +145,8 @@ const ProfilePage: React.FC = () => {
             Sign Out
           </Button>
         </Grid>
-
-        {/* Divider */}
         <Divider orientation="horizontal" flexItem sx={{ backgroundColor: '#90caf9', display: { xs: 'block', sm: 'none' } }} />
         <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#90caf9', display: { xs: 'none', sm: 'block' } }} />
-
-        {/* Right Side: Profile Details */}
         <Grid container sx={{ 
           padding: '32px', 
           background: '#fff', 

@@ -15,7 +15,7 @@ export default function JobPostForm() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  // Fetch jobs using TanStack Query
+  // Fetch 
   const { data: jobs, isLoading, isError } = useQuery({
     queryKey: ['jobs'],
     queryFn: async () => {
@@ -26,7 +26,7 @@ export default function JobPostForm() {
     },
   });
 
-  // Create job mutation
+  // Create 
   const createJobMutation = useMutation({
     mutationFn: async (formData) => {
       if (!user) throw new Error('User not found!');
@@ -39,7 +39,7 @@ export default function JobPostForm() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['jobs']); // Refetch jobs after creation
+      queryClient.invalidateQueries(['jobs']); // Refetch jobs
       setIsFormOpen(false);
       alert('Job created successfully!');
     },
@@ -48,7 +48,7 @@ export default function JobPostForm() {
     },
   });
 
-  // Update job mutation
+  // Update
   const updateJobMutation = useMutation({
     mutationFn: async (formData) => {
       const response = await fetch('/api/jobs', {
@@ -60,7 +60,7 @@ export default function JobPostForm() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['jobs']); // Refetch jobs after update
+      queryClient.invalidateQueries(['jobs']); // Refetch jobs
       setIsFormOpen(false);
       setSelectedJob(null);
       alert('Job updated successfully!');
@@ -70,7 +70,7 @@ export default function JobPostForm() {
     },
   });
 
-  // Delete job mutation
+  // Delete
   const deleteJobMutation = useMutation({
     mutationFn: async (id) => {
       const response = await fetch('/api/jobs', {
@@ -82,7 +82,7 @@ export default function JobPostForm() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['jobs']); // Refetch jobs after deletion
+      queryClient.invalidateQueries(['jobs']); // Refetch
       alert('Job deleted successfully!');
     },
     onError: (error) => {

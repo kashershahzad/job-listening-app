@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Grid,
@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useUser } from '@/context/UserContext';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 interface Job {
   id: number;
@@ -37,6 +38,16 @@ interface Job {
   category: string;
   location: string;
   salary: number;
+}
+
+interface Application {
+  job_id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  qualification: string;
+  resume: File;
 }
 
 const modalStyle = {
@@ -51,10 +62,28 @@ const modalStyle = {
   p: 4,
 };
 
+const fetchJobs = async (): Promise<Job[]> => {
+  const response = await fetch('/api/jobs');
+  if (!response.ok) throw new Error('Failed to fetch jobs');
+  const data = await response.json();
+  return data.jobs;
+};
+
+const submitApplication = async (application: FormData): Promise<any> => {
+  const response = await fetch('/api/application', {
+    method: 'POST',
+    body: application,
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to submit application');
+  }
+  
+  return response.json();
+};
+
 const JobList: React.FC = () => {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
   const [isApplyOpen, setIsApplyOpen] = useState<boolean>(false);
@@ -67,30 +96,39 @@ const JobList: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [locations, setLocations] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetch('/api/jobs')
-      .then((response) => {
-        if (!response.ok) throw new Error('Failed to fetch jobs');
-        return response.json();
-      })
-      .then((data: { jobs: Job[] }) => {
-        setJobs(data.jobs);
-        setLoading(false);
-        const uniqueCategories = Array.from(new Set(data.jobs.map((job) => job.category)));
-        const uniqueLocations = Array.from(new Set(data.jobs.map((job) => job.location)));
-        setCategories(uniqueCategories);
-        setLocations(uniqueLocations);
-      })
-      .catch((error: Error) => {
-        console.error('Error fetching jobs:', error);
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
+  const { 
+    data: jobs = [], 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['jobs'],
+    queryFn: fetchJobs,
+    staleTime: 5 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
+  });
+
+  const categories = Array.from(new Set(jobs.map((job) => job.category)));
+  const locations = Array.from(new Set(jobs.map((job) => job.location)));
+
+  const { 
+    mutate: submitJobApplication, 
+    isPending: isSubmitting 
+  } = useMutation({
+    mutationFn: submitApplication,
+    onSuccess: () => {
+      alert('Application submitted successfully!');
+      setIsApplyOpen(false);
+      setName('');
+      setEmail('');
+      setPhoneNumber('');
+      setQualification('');
+      setResumeFile(null);
+    },
+    onError: (error: Error) => {
+      alert(error.message || 'Failed to submit application');
+    },
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
@@ -98,7 +136,7 @@ const JobList: React.FC = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!user) {
       alert('Please log in to apply for jobs');
       return;
@@ -109,8 +147,6 @@ const JobList: React.FC = () => {
       return;
     }
 
-    setIsSubmitting(true);
-
     const formData = new FormData();
     formData.append('resume', resumeFile);
     formData.append('job_id', selectedJob.id.toString());
@@ -120,30 +156,7 @@ const JobList: React.FC = () => {
     formData.append('phoneNumber', phoneNumber);
     formData.append('qualification', qualification);
 
-    try {
-      const response = await fetch('/api/application', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit application');
-      }
-
-      alert('Application submitted successfully!');
-      setIsApplyOpen(false);
-      setName('');
-      setEmail('');
-      setPhoneNumber('');
-      setQualification('');
-      setResumeFile(null);
-    } catch (error) {
-      console.error('Error submitting application:', error);
-      alert(error instanceof Error ? error.message : 'Failed to submit application');
-    } finally {
-      setIsSubmitting(false);
-    }
+    submitJobApplication(formData);
   };
 
   const filteredJobs = jobs.filter((job) => {
@@ -153,7 +166,7 @@ const JobList: React.FC = () => {
     );
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress size={60} />
@@ -165,7 +178,7 @@ const JobList: React.FC = () => {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="64px">
         <Typography color="error" variant="h6">
-          Error: {error}
+          Error: {(error as Error).message}
         </Typography>
       </Box>
     );

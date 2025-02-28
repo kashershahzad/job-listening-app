@@ -1,5 +1,3 @@
-/* eslint-disable some-rule -- explanation of why this rule is disabled */
-
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -37,7 +35,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
       <Box
         sx={{
           alignItems: 'center',
-          backgroundColor: 'white', // Set white background for the right side
+          backgroundColor: 'white',
           display: { xs: 'none', lg: 'flex' },
           justifyContent: 'center',
           p: 3,

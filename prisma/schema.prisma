@@ -40,10 +40,10 @@ model Application {
   id            Int     @id @default(autoincrement())
   jobId         Int
   userId        Int
-  name          String?  // Made nullable
-  email         String?  // Made nullable
-  phoneNumber   String?  // Made nullable
-  qualification String?  // Made nullable
+  name          String?  
+  email         String?  
+  phoneNumber   String?  
+  qualification String? 
   resume        String
   status        String  @default("pending")
   job           Job     @relation(fields: [jobId], references: [id])
